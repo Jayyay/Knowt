@@ -52,3 +52,6 @@ public/bundle.js
 
 # uploaded files
 uploads/*
+
+# Ignore npm package
+node_modules/

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const app = require('../index');
+const app = require('../app');
 
 /**
  * Normalize a port into a number, string, or false.
