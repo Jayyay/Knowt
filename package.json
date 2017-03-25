@@ -1,0 +1,31 @@
+{
+  "name": "knowt",
+  "version": "1.0.0",
+  "description": "A note-taking app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jayyay/Knowt.git"
+  },
+  "author": "Jay Wang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jayyay/Knowt/issues"
+  },
+  "homepage": "https://github.com/Jayyay/Knowt#readme",
+  "dependencies": {
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "express": "^4.15.2"
+  },
+  "devDependencies": {
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.3"
+  }
+}
