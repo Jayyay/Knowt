@@ -1,5 +1,4 @@
 # Knowt
-A Note Taking App
 
 How to set up and run react:
 1. Install node.js
