@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
 const path = require('path');
+const models = require('./models');
 
 const app = express();
 
@@ -11,8 +12,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.get('/hello-world', (req, res) => {
-  res.send('hello world');
+app.get('/users', (req, res) => {
+  models.users.findAll().then((users) => {
+    res.send(users);
+  });
 });
 
 app.get('/', (req, res) => {
@@ -34,12 +37,5 @@ const allowCrossDomain = (req, res, next) => {
   }
 };
 app.use(allowCrossDomain);
-
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
 
 module.exports = app;
