@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: [
     'babel-polyfill',
-    path.join(__dirname, './client/app.js'),
+    path.join(__dirname, './client/app.jsx'),
   ],
   output: {
     path: __dirname,
