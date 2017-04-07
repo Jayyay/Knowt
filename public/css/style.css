@@ -3,6 +3,16 @@ body {
   font-size: 16px;
 }
 
+.pt-menu{
+  width: 200px;
+  margin-top: 50px;
+}
+
+.pt-card{
+  width: 450px;
+  margin-left: 500px;
+}
+
 a {
   color: #00bcd4;
   font-weight: bold;

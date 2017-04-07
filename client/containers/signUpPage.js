@@ -1,5 +1,5 @@
-import React, { PropTypes } from 'react';
-import signUpForm from '../components/signUpForm.js';
+const React = require('react');
+const signUpForm =require('../components/signUpForm.js');
 
 
 class signUpPage extends React.Component {

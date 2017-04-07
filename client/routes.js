@@ -1,5 +1,5 @@
 import base from './components/base.js';
-import main from './components/main.js';
+import Main from './components/main.js';
 import loginPage from './containers/loginPage.js';
 import signUpPage from './containers/signUpPage.js';
 
