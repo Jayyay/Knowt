@@ -30,7 +30,7 @@ function _getLoginQueryString() {
 }
 
 async function _loginAsync(credentials) {
-  const loginUrl = URL + 'login/';
+  const loginUrl = `${URL}login/`;
   const body = {
     username: credentials.username || undefined,
     password: credentials.password || undefined,
@@ -54,7 +54,7 @@ async function _loginAsync(credentials) {
 const userAccessor = {
   getAuthHeader() {
     return {
-      'Authorization': 'JWT ' + this.getToken(),
+      Authorization: `JWT ${this.getToken()}`,
       'Content-Type': 'application/json',
     };
   },
