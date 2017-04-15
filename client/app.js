@@ -12,7 +12,7 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-const Main = require('./components/main.js').default;
+const Main = require('./components/Main.js').default;
 
 ReactDOM.render(
   <Main />,
