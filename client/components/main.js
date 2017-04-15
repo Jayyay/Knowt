@@ -4,7 +4,7 @@ const React = require('react');
 injectTapEventPlugin();
 
 // import '../../public/css/style.css';
-const Loginscreen = require('./Loginscreen');
+const Loginscreen = require('../containers/Loginscreen.js');
 
 class Main extends React.Component {
   constructor(props) {
