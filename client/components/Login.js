@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
 const React = require('react');
-const userAccessor = require('../../accessor/userAccessor');
+const userAccessor = require('../../accessor/userAccessor.js');
 
 class Login extends React.Component {
   constructor(props) {

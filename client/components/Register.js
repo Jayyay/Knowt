@@ -4,8 +4,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 
 const React = require('react');
-const Login = require('./Login').default;
-const userAccessor = require('../../accessor/userAccessor');
+const Login = require('./Login.js').default;
+const userAccessor = require('../../accessor/userAccessor.js');
 
 
 
