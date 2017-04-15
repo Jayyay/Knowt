@@ -1,6 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const userRouter = require('./users/users');
+const noteRouter = require('./notes/notes');
 
 const router = express.Router();
 
@@ -11,7 +12,9 @@ router.use('/', passport.authenticate(
   next();
 });
 
-router.use('/user', userRouter);
+router.use('/users', userRouter);
+router.use('/notes', noteRouter);
+
 router.get('/whosyourdaddy', (req, res) => {
   res.send('Jay');
 });
