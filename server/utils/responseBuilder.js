@@ -49,7 +49,7 @@ function unauthorized(error) {
 function success(data) {
   return {
     status: 'success',
-    data: data || undefined,
+    data,
   };
 }
 

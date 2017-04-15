@@ -41,7 +41,7 @@ router.put('/', (req, res) => {
   }).then(() => { // committed
     res.json(rb.success(responseUser));
   }).catch((error) => {
-    res.status(400).json(rb.failure(error, rb.ERROR.TRANSACTION_ERR));
+    res.status(400).json(rb.failure(error.message, rb.ERROR.TRANSACTION_ERR));
   });
 });
 

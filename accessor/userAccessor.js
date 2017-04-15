@@ -58,6 +58,9 @@ const userAccessor = {
       'Content-Type': 'application/json',
     };
   },
+  getUserInfo() {
+    return JSON.parse(sessionStorage.getItem(USER_KEY));
+  },
   isLoggedIn() {
     const token = this.getToken();
     const id = this.getId();
