@@ -35,7 +35,7 @@ class Main extends React.Component {
   render() {
     return (
       <div>
-        <Header />
+        <Header displayName={this.state.displayName}/>
         <LeftMenu />
         <div> Name: {this.state.displayName} </div>
         <div> NoteCount: {this.state.notes.length}</div>

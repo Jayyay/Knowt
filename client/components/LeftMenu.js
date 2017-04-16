@@ -3,15 +3,15 @@ import React from 'react';
 import Paper from 'material-ui/Paper';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
-import RemoveRedEye from 'material-ui/svg-icons/image/remove-red-eye';
-import PersonAdd from 'material-ui/svg-icons/social/person-add';
+import NoteAdd from 'material-ui/svg-icons/action/note-add';
+import CheckBox from 'material-ui/svg-icons/toggle/check-box';
 import ContentLink from 'material-ui/svg-icons/content/link';
 import Divider from 'material-ui/Divider';
 import Drawer from 'material-ui/Drawer';
 import RaisedButton from 'material-ui/RaisedButton';
-import ContentCopy from 'material-ui/svg-icons/content/content-copy';
-import Download from 'material-ui/svg-icons/file/file-download';
-import Delete from 'material-ui/svg-icons/action/delete';
+import Tags from 'material-ui/svg-icons/action/turned-in-not';
+import Settings from 'material-ui/svg-icons/action/settings';
+import Help from 'material-ui/svg-icons/action/help';
 import FontIcon from 'material-ui/FontIcon';
 
 
@@ -44,19 +44,18 @@ class LeftMenu extends React.Component {
       <MuiThemeProvider>
         <div>
           <RaisedButton
-            label="Toggle Drawer"
+            label="Menu"
             onTouchTap={this.handleToggle}
           />
           // <Paper style={style.paper}>
-            <Drawer docked={false} onRequestChange={this.handleToggle} open={this.state.open}>
-              <MenuItem primaryText="Preview" leftIcon={<RemoveRedEye />} />
-              <MenuItem primaryText="Share" leftIcon={<PersonAdd />} />
-              <MenuItem primaryText="Get links" leftIcon={<ContentLink />} />
+            <Drawer docked={false} onRequestChange={this.handleToggle} open={this.state.open} containerStyle={{height: 'calc(100% - 64px)', top: 64}}>
+              <MenuItem primaryText="New note" leftIcon={<NoteAdd/>} />
+              <MenuItem primaryText="To do" leftIcon={<CheckBox/>} />
               <Divider />
-              <MenuItem primaryText="Make a copy" leftIcon={<ContentCopy />} />
-              <MenuItem primaryText="Download" leftIcon={<Download />} />
+              <MenuItem primaryText="Tags" leftIcon={<Tags />} />
               <Divider />
-              <MenuItem primaryText="Remove" leftIcon={<Delete />} />
+              <MenuItem primaryText="Settings" leftIcon={<Settings />} />
+              <MenuItem primaryText="Help" leftIcon={<Help />} />
             </Drawer>
           // </Paper>
         </div>

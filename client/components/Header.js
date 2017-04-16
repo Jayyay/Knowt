@@ -5,6 +5,7 @@ import MenuItem from 'material-ui/MenuItem';
 import AccountCircle from 'material-ui/svg-icons/action/account-circle';
 import FlatButton from 'material-ui/FlatButton';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import EditorIcon from 'material-ui/svg-icons/editor/mode-edit';
 const React = require('react');
 const userAccessor = require('../../accessor/userAccessor.js');
 injectTapEventPlugin();
@@ -15,9 +16,30 @@ const styles = {
   },
 };
 
+const iconStyles = {
+  color: 'white',
+  marginLeft: 15,
+  marginTop: 5,
+};
+
+
 class Header extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      displayName: 'User Name',
+    };
+  }
+
   render() {
+    const customIcon = (
+      <div>
+        <b style={styles.title}> K N O W T </b>
+        <EditorIcon style={iconStyles} />
+      </div>
+    );
+
     const buttonStyle = {
       backgroundColor: 'transparent',
       color: 'white',
@@ -28,7 +50,7 @@ class Header extends React.Component {
       <IconMenu
         iconButtonElement={
           <FlatButton
-            label="User Name"
+            label={this.state.displayName}
             icon={<AccountCircle />}
             style={buttonStyle}
           />
@@ -45,7 +67,7 @@ class Header extends React.Component {
       <MuiThemeProvider>
         <div>
           <AppBar
-            title={<span style={styles.title}>K n o w t</span>}
+            title={customIcon}
             iconElementRight={accountButton}
           />
         </div>
