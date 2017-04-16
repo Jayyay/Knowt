@@ -7,8 +7,6 @@ const React = require('react');
 const Login = require('./Login.js').default;
 const userAccessor = require('../../accessor/userAccessor.js');
 
-
-
 const style = {
   margin: 15,
 };
@@ -43,6 +41,7 @@ class Register extends React.Component {
        // change page
     } else {
        // error handling
+      console.log('Register Failed!');
     }
   }
   handleClick(event) {
