@@ -34,7 +34,7 @@ class Register extends React.Component {
     if (res.status === 'success') {
       const loginscreen = [];
       loginscreen.push(<Login parentContext={this} />);
-      const loginmessage = 'Not Registered yet.Go to registration';
+      const loginmessage = 'Not Registered yet? Click here to register!';
       self.props.parentContext.setState({ loginscreen,
         loginmessage,
         buttonLabel: 'Register',
@@ -54,9 +54,6 @@ class Register extends React.Component {
       <div>
         <MuiThemeProvider>
           <div>
-            <AppBar
-              title="Register"
-            />
             <TextField
               hintText="Enter your First Name"
               floatingLabelText="First Name"
