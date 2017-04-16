@@ -1,6 +1,6 @@
 const React = require('react');
 const { render } = require('react-dom');
-const Main = require('./main.js');
+const Main = require('./Main.js').default;
 
 class App extends React.Component {
   render() {

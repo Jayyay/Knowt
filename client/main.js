@@ -1,6 +1,8 @@
 const React = require('react');
 const userAccessor = require('../accessor/userAccessor');
 const noteAccessor = require('../accessor/noteAccessor');
+const Header = require('./components/Header.js').default;
+const LeftMenu = require('./components/LeftMenu.js').default;
 
 class Main extends React.Component {
   constructor(props) {
@@ -33,6 +35,8 @@ class Main extends React.Component {
   render() {
     return (
       <div>
+        <Header />
+        <LeftMenu />
         <div> Name: {this.state.displayName} </div>
         <div> NoteCount: {this.state.notes.length}</div>
       </div>
@@ -40,4 +44,4 @@ class Main extends React.Component {
   }
 }
 
-module.exports = Main;
+export default Main;
