@@ -1,4 +1,5 @@
 const express = require('express');
+const _ = require('lodash');
 const models = require('../../models');
 const db = require('../../models/index');
 const rb = require('../utils/responseBuilder');
@@ -8,13 +9,24 @@ const transUtils = require('../utils/transactionUtilities');
 
 const router = express.Router();
 
+function sanityCheck(noteId, userId, permission) {
+  if (!noteId || !userId) {
+    transUtils.abort('Must provide a valid noteId and userId');
+  }
+  if (!permission || (permission !== permEnum.VIEW && permission !== permEnum.EDIT)) {
+    transUtils.abort('Must provide a valid permission: VIEW or EDIT');
+  }
+}
+
 router.get('/', (req, res) => {
   let responseNotes;
   db.sequelize.transaction((t) => {
-    const query = { where: { userId: req.user.id }, transaction: t };
-    return models.sharing.findAll(query).then((sharingObjects) => {
+    return models.sharing.findAll({
+      where: { userId: req.user.id },
+      transaction: t,
+    }).then((sharingObjects) => {
       const noteIds = _.map(sharingObjects, 'noteId');
-      const query = { where: { noteId: noteIds }, transaction: t };
+      const query = { where: { id: noteIds }, transaction: t };
       queryBuilder.page(query, req.query.rowPerPage, req.query.pageNumber);
       queryBuilder.orderByCreatedAt(query);
       return models.notes.findAll(query);
@@ -34,15 +46,13 @@ router.post('/', (req, res) => {
   const permission = req.body.permission;
   let responseSharing;
   db.sequelize.transaction((t) => {
-    if (!noteId || !userId) {
-      transUtils.abort('Must provide a valid noteId and userId');
-    }
-    if (!permission || (permission !== permEnum.VIEW && permission !== permEnum.EDIT)) {
-      transUtils.abort('Must provide a valid permission: VIEW or EDIT');
+    sanityCheck(noteId, userId, permission);
+    if (userId == req.user.id) {
+      transUtils.abort('Cannot share with your own self');
     }
     return models.notes.findOne({
       attributes: ['id', 'userId'],
-      where: { noteId },
+      where: { id: noteId },
       transaction: t,
     }).then((noteObject) => {
       if (!noteObject || noteObject.userId != req.user.id) {
@@ -50,7 +60,7 @@ router.post('/', (req, res) => {
       }
       return models.users.findOne({
         attributes: ['id'],
-        where: { userId },
+        where: { id: userId },
         transaction: t,
       }).then((userObject) => {
         if (!userObject) {
@@ -79,28 +89,68 @@ router.post('/', (req, res) => {
   });
 });
 
-router.post('/:noteId/:userId', (req, res) => {
+router.put('/:noteId/:userId', (req, res) => {
   const noteId = req.params.noteId;
   const userId = req.params.userId;
+  const permission = req.body.permission;
   db.sequelize.transaction((t) => {
-
+    sanityCheck(noteId, userId, permission);
+    return models.sharing.findOne({
+      where: { noteId, userId },
+      transaction: t,
+    }).then((existingSharingObject) => {
+      if (!existingSharingObject) {
+        transUtils.abort('No shared note is found');
+      }
+      return models.sharing.update(
+        { permission },
+        {
+          where: { noteId, userId },
+          transaction: t,
+        }
+      );
+    });
   }).then(() => { // committed
     res.json(rb.success());
   }).catch((error) => {
-    res.status(400).json(rb.failure(error.message);
+    res.status(400).json(rb.failure(error.message));
   });
-})
+});
 
 router.delete('/:noteId/:userId', (req, res) => {
   const noteId = req.params.noteId;
   const userId = req.params.userId;
   db.sequelize.transaction((t) => {
-
+    if (!noteId || !userId) {
+      transUtils.abort('Must provide a valid noteId and userId');
+    }
+    return models.notes.findOne({
+      attributes: ['userId'],
+      where: { id: noteId },
+      transaction: t,
+    }).then((noteObjectFound) => {
+      if (noteObjectFound.userId != req.user.id && userId != req.user.id) {
+        // only the sharedTo user or the note's author can stop the sharing
+        transUtils.abort('No shared note is found');
+      }
+      return models.sharing.findOne({
+        where: { noteId, userId },
+        transaction: t,
+      });
+    }).then((existingSharingObject) => {
+      if (!existingSharingObject) {
+        transUtils.abort('No shared note is found');
+      }
+      return models.sharing.destroy({
+        where: { noteId, userId },
+        transaction: t,
+      });
+    });
   }).then(() => { // committed
     res.json(rb.success());
   }).catch((error) => {
-    res.status(400).json(rb.failure(error.message);
+    res.status(400).json(rb.failure(error.message));
   });
-})
+});
 
 module.exports = router;

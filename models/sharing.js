@@ -20,6 +20,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.ENUM('VIEW','EDIT'),
       allowNull: false,
       defaultValue: "VIEW"
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
     tableName: 'sharing'
