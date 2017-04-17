@@ -15,6 +15,11 @@ module.exports = function(sequelize, DataTypes) {
     userId: {
       type: DataTypes.INTEGER(11),
       allowNull: false
+    },
+    permission: {
+      type: DataTypes.ENUM('VIEW','EDIT'),
+      allowNull: false,
+      defaultValue: "VIEW"
     }
   }, {
     tableName: 'sharing'
