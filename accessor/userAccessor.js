@@ -117,7 +117,7 @@ const userAccessor = {
    * @param  {String}  email
    */
   async signUpAsync(username, password, displayName, email) {
-    const signUpUrl = `${API_URL}users/`;
+    const signUpUrl = `${URL}signup/`;
     const body = { username, password, displayName, email };
     const response = await fetch(signUpUrl, {
       method: 'POST',
