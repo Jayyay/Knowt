@@ -15,20 +15,17 @@ class Register extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      first_name: '',
-      last_name: '',
+      username: '',
+      displayName: '',
       email: '',
       password: '',
     };
   }
 
-  componentDidMount() {
-    this.register();
-  }
-
   async register() {
     const self = this;
-    const res = await userAccessor.signUpAsync(this.state.first_name, this.state.password, this.state.last_name, this.state.email);
+    console.log(this.state.username, this.state.password, this.state.displayName, this.state.email);
+    const res = await userAccessor.signUpAsync(this.state.username, this.state.password, this.state.displayName, this.state.email);
     if (res.status === 'success') {
       const loginscreen = [];
       loginscreen.push(<Login parentContext={this} />);
@@ -40,10 +37,11 @@ class Register extends React.Component {
       });
        // change page
     } else {
-       // error handling
+       // TODO: error handling, surface some error message would be preferred.
       console.log('Register Failed!');
     }
   }
+  
   handleClick(event) {
     this.register();
   }
@@ -54,15 +52,15 @@ class Register extends React.Component {
         <MuiThemeProvider>
           <div>
             <TextField
-              hintText="Enter your First Name"
-              floatingLabelText="First Name"
-              onChange={(event, newValue) => this.setState({ first_name: newValue })}
+              hintText="Enter your User Name"
+              floatingLabelText="User Name"
+              onChange={(event, newValue) => this.setState({ username: newValue })}
             />
             <br />
             <TextField
-              hintText="Enter your Last Name"
-              floatingLabelText="Last Name"
-              onChange={(event, newValue) => this.setState({ last_name: newValue })}
+              hintText="Enter your Display Name"
+              floatingLabelText="Display Name"
+              onChange={(event, newValue) => this.setState({ displayName: newValue })}
             />
             <br />
             <TextField
