@@ -1,4 +1,5 @@
 const express = require('express');
+const _ = require('lodash');
 const models = require('../../models');
 const db = require('../../models/index');
 const rb = require('../utils/responseBuilder');
@@ -14,7 +15,18 @@ router.get('/', (req, res) => {
     queryBuilder.orderByCreatedAt(query);
     query.transaction = t;
     return models.notes.findAll(query).then((noteObjects) => {
-      responseNotes = noteObjects;
+      const noteIds = _.map(noteObjects, 'id');
+      responseNotes = _.map(noteObjects, 'dataValues');
+      return models.sharing.findAll({
+        attributes: ['noteId', 'userId'],
+        where: { noteId: noteIds },
+        transaction: t,
+      });
+    }).then((sharingObjects) => {
+      const noteIdToSharings = _.groupBy(sharingObjects, 'noteId');
+      _.forEach(responseNotes, (n) => {
+        n.sharing = noteIdToSharings[n.id];
+      });
     });
   }).then(() => { // committed
     res.json(rb.success(responseNotes));
