@@ -1,6 +1,6 @@
 const React = require('react');
 const { render } = require('react-dom');
-const Main = require('./main.js');
+const Main = require('./components/Main.js').default;
 
 class App extends React.Component {
   render() {
@@ -9,3 +9,12 @@ class App extends React.Component {
 }
 
 render(<App />, document.getElementById('reactRoot'));
+
+// const React = require('react');
+// const ReactDOM = require('react-dom');
+// const Main = require('./components/Main.js').default;
+//
+// ReactDOM.render(
+//   <Main />,
+//   document.getElementById('reactRoot')
+// );
