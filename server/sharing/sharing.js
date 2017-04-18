@@ -21,17 +21,26 @@ function sanityCheck(noteId, userId, permission) {
 router.get('/', (req, res) => {
   let responseNotes;
   db.sequelize.transaction((t) => {
+    let noteIdToSharings;
     return models.sharing.findAll({
       where: { userId: req.user.id },
       transaction: t,
     }).then((sharingObjects) => {
       const noteIds = _.map(sharingObjects, 'noteId');
+      noteIdToSharings = _.groupBy(sharingObjects, 'noteId');
       const query = { where: { id: noteIds }, transaction: t };
       queryBuilder.page(query, req.query.rowPerPage, req.query.pageNumber);
       queryBuilder.orderByCreatedAt(query);
       return models.notes.findAll(query);
     }).then((noteObjects) => {
-      responseNotes = noteObjects;
+      responseNotes = _.map(noteObjects, 'dataValues');
+      _.forEach(responseNotes, (n) => {
+        if (noteIdToSharings[n.id]) {
+          n.permission = noteIdToSharings[n.id][0].permission;
+        } else {
+          n.permission = permEnum.VIEW;
+        }
+      });
     });
   }).then(() => { // committed
     res.json(rb.success(responseNotes));
