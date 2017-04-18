@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
     }).then((sharingObjects) => {
       const noteIdToSharings = _.groupBy(sharingObjects, 'noteId');
       _.forEach(responseNotes, (n) => {
-        n.sharing = noteIdToSharings[n.noteId];
+        n.sharing = noteIdToSharings[n.id];
       });
     });
   }).then(() => { // committed
