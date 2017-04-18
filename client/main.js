@@ -4,6 +4,9 @@ const noteAccessor = require('../accessor/noteAccessor');
 const Header = require('./components/Header.js').default;
 const LeftMenu = require('./components/LeftMenu.js').default;
 const NotesComponent = require('./NotesComponent.js').default;
+const KeptApp = require('./components/KeptApp.js');
+const KeptStore = require('./store');
+const store = new KeptStore();
 
 class Main extends React.Component {
   constructor(props) {
@@ -38,7 +41,7 @@ class Main extends React.Component {
       <div>
         <Header displayName={this.state.displayName}/>
         <LeftMenu />
-        <NotesComponent />
+        <KeptApp store={store} />
         <div> Name: {this.state.displayName} </div>
         <div> NoteCount: {this.state.notes.length}</div>
       </div>
