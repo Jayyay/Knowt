@@ -2,14 +2,12 @@ const emailjs = require('emailjs');
 const models = require('../../models');
 const config = require('../../../config/authconfig.json');
 
-const emailKey = config.emailKey;
-
 const selfAddr = 'Knowt Support <support@knowt.pro>';
 
 // initialize and cache connection to email server
 const smtpServer = emailjs.server.connect({
-  user: 'postmaster@sandboxbd963623c799441a874f09c40c693eca.mailgun.org',
-  password: emailKey,
+  user: config.emailUser,
+  password: config.emailKey,
   host: 'smtp.mailgun.org',
   tls: true,
 });
