@@ -6,6 +6,7 @@ const rb = require('../utils/responseBuilder');
 const permEnum = require('./permissionEnum');
 const queryBuilder = require('../utils/queryBuilder');
 const transUtils = require('../utils/transactionUtilities');
+const emailSender = require('../emails/emailSender');
 
 const router = express.Router();
 
@@ -92,6 +93,7 @@ router.post('/', (req, res) => {
       });
     });
   }).then(() => { // committed
+    emailSender.receiveSharedNote(req.user.id, userId);
     res.json(rb.success(responseSharing));
   }).catch((error) => {
     res.status(400).json(rb.failure(error.message));
