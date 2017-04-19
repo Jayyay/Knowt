@@ -33,7 +33,7 @@ class Loginscreen extends React.Component {
   }
   componentWillMount() {
     const loginscreen = [];
-    loginscreen.push(<Login parentContext={this} appContext={this.props.parentContext} />);
+    loginscreen.push(<Login parentContext={this} appContext={this.props.parentContext} checkLoggedIn={this.props.checkLoggedIn} />);
     const loginmessage = 'Not Registered yet? \n Click here to register!';
     this.setState({
       loginscreen,
@@ -57,7 +57,7 @@ class Loginscreen extends React.Component {
       });
     } else {
       const loginscreen = [];
-      loginscreen.push(<Login parentContext={this} />);
+      loginscreen.push(<Login parentContext={this} checkLoggedIn={this.props.checkLoggedIn} />);
       loginmessage = 'Not Registered yet? \n Click here to register!';
       this.setState({
         loginscreen,
@@ -72,7 +72,7 @@ class Loginscreen extends React.Component {
   render() {
     const customIcon = (
       <div>
-        <EditorIcon style={iconStyles}/>
+        <EditorIcon style={iconStyles} />
         <b> K N O W T </b>
       </div>
     );
@@ -98,5 +98,9 @@ class Loginscreen extends React.Component {
     );
   }
 }
+
+Loginscreen.propTypes = {
+  checkLoggedIn: React.PropTypes.func.isRequired,
+};
 
 export default Loginscreen;

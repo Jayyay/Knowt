@@ -64,8 +64,7 @@ const userAccessor = {
   isLoggedIn() {
     const token = this.getToken();
     const id = this.getId();
-    const permission = this.getPermission();
-    return token && !isNaN(id) && permission;
+    return token && !isNaN(id);
   },
   isRedirected() {
     return !!_getAccessTokenFromURL();
