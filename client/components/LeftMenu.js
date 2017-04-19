@@ -32,7 +32,7 @@ class LeftMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = { open: false };
-    this.handleToggle = this.handleToggle .bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
   }
 
   handleToggle() {
@@ -48,9 +48,9 @@ class LeftMenu extends React.Component {
             onTouchTap={this.handleToggle}
           />
           // <Paper style={style.paper}>
-            <Drawer docked={false} onRequestChange={this.handleToggle} open={this.state.open} containerStyle={{height: 'calc(100% - 64px)', top: 64}}>
-              <MenuItem primaryText="New note" leftIcon={<NoteAdd/>} />
-              <MenuItem primaryText="To do" leftIcon={<CheckBox/>} />
+            <Drawer docked={false} onRequestChange={this.handleToggle} open={this.state.open} containerStyle={{ height: 'calc(100% - 64px)', top: 64 }}>
+              <MenuItem primaryText="New note" leftIcon={<NoteAdd />} onTouchTap={this.props.newItem("text")} />
+              <MenuItem primaryText="To do" leftIcon={<CheckBox />} />
               <Divider />
               <MenuItem primaryText="Tags" leftIcon={<Tags />} />
               <Divider />

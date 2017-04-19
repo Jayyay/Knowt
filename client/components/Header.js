@@ -4,11 +4,10 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import AccountCircle from 'material-ui/svg-icons/action/account-circle';
 import FlatButton from 'material-ui/FlatButton';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import EditorIcon from 'material-ui/svg-icons/editor/mode-edit';
 const React = require('react');
 const userAccessor = require('../../accessor/userAccessor.js');
-injectTapEventPlugin();
+
 
 const styles = {
   title: {
