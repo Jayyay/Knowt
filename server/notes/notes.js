@@ -78,7 +78,7 @@ router.put('/:noteId', (req, res) => {
         transUtils.abort('No such note found');
       }
       if (noteObjectFound.userId == req.user.id) {
-        return executeUpdate;
+        return executeUpdate();
       }
       // not authored by current user, so we check whether this note is shared
       return models.sharing.findOne({
