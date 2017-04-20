@@ -29,15 +29,14 @@ class App extends React.Component {
   }
 
   checkLoggedIn(state, name) {
-    this.setState({ displayName : name });
+    this.setState({ displayName: name });
     this.setState({ isLoggedIn: state });
+  }
 
   componentDidMount() {
     if (this.state.isRedirectedFromExternalLogin) {
       userAccessor.loginWithAccessToken();
     }
-  }
-
   }
 
   render() {
@@ -49,7 +48,7 @@ class App extends React.Component {
             height={40}
             spinnerColor={'#458'}
             spinnerWidth={2}
-            show={true}
+            show
           />
         </div>
       );
