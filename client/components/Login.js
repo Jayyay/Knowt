@@ -4,6 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import PropTypes from 'react-prop-types';
 
 const React = require('react');
 const userAccessor = require('../../accessor/userAccessor.js');
@@ -34,6 +35,7 @@ class Login extends React.Component {
     if (res.status === 'success') {
       this.setState({ message: 'Login Successful!' });
       this.handleOpen();
+      this.props.checkLoggedIn(true);
        // change page
     } else {
       this.setState({ message: 'Login Failed.' });
@@ -95,6 +97,10 @@ class Login extends React.Component {
     );
   }
 }
+
+Login.propTypes = {
+  checkLoggedIn: React.PropTypes.func.isRequired,
+};
 
 
 export default Login;
