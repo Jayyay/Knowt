@@ -1,8 +1,11 @@
 const express = require('express');
+const _ = require('lodash');
 const models = require('../../models');
 const db = require('../../models/index');
 const rb = require('../utils/responseBuilder');
 const queryBuilder = require('../utils/queryBuilder');
+const permEnum = require('../sharing/permissionEnum');
+const transUtils = require('../utils/transactionUtilities');
 
 const router = express.Router();
 
@@ -14,7 +17,18 @@ router.get('/', (req, res) => {
     queryBuilder.orderByCreatedAt(query);
     query.transaction = t;
     return models.notes.findAll(query).then((noteObjects) => {
-      responseNotes = noteObjects;
+      const noteIds = _.map(noteObjects, 'id');
+      responseNotes = _.map(noteObjects, 'dataValues');
+      return models.sharing.findAll({
+        attributes: ['noteId', 'userId'],
+        where: { noteId: noteIds },
+        transaction: t,
+      });
+    }).then((sharingObjects) => {
+      const noteIdToSharings = _.groupBy(sharingObjects, 'noteId');
+      _.forEach(responseNotes, (n) => {
+        n.sharing = noteIdToSharings[n.id];
+      });
     });
   }).then(() => { // committed
     res.json(rb.success(responseNotes));
@@ -55,12 +69,27 @@ router.put('/:noteId', (req, res) => {
       where: { id: noteId },
       transaction: t,
     }).then((noteObjectFound) => {
-      if (!noteObjectFound || noteObjectFound.userId != req.user.id) {
-        throw new Error(`No note with ${req.params.id} is found`);
+      function executeUpdate() {
+        noteObjectFound.content = content;
+        responseNote = noteObjectFound;
+        return noteObjectFound.save({ transaction: t });
       }
-      noteObjectFound.content = content;
-      responseNote = noteObjectFound;
-      return noteObjectFound.save({ transaction: t });
+      if (!noteObjectFound) {
+        transUtils.abort('No such note found');
+      }
+      if (noteObjectFound.userId == req.user.id) {
+        return executeUpdate();
+      }
+      // not authored by current user, so we check whether this note is shared
+      return models.sharing.findOne({
+        where: { noteId, userId: req.user.id, permission: permEnum.EDIT },
+        transaction: t,
+      }).then((sharingObjectFound) => {
+        if (!sharingObjectFound) {
+          transUtils.abort('No such note found');
+        }
+        return executeUpdate();
+      });
     });
   }).then(() => { // committed
     res.json(rb.success(responseNote));

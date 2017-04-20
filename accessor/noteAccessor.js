@@ -10,6 +10,7 @@ if (typeof fetch === 'undefined') {
 
 const noteAccessor = {
   /**
+   * GET /api/notes/?rowPerPage=&pageNumber=&
    * Get all notes belonging to current user.
    * Pagination supported.
    * @param  {Object}  query {rowPerPage, pageNumber}
@@ -31,6 +32,10 @@ const noteAccessor = {
     console.log('getNotesByQueryAsync response:', responseJson);
     return responseJson;
   },
+  /**
+   * POST /api/notes/
+   * @param  {String}  content
+   */
   async createNoteAsync(content) {
     const createNoteUrl = NOTE_URL;
     const body = { content };
@@ -43,6 +48,11 @@ const noteAccessor = {
     console.log('createNoteAsync reponse:', responseJson);
     return responseJson;
   },
+  /**
+   * PUT /api/notes/:noteId
+   * @param  {Number}  noteId  the id of the note being modified.
+   * @param  {String}  content new content
+   */
   async updateNoteAsync(noteId, content) {
     const updateNoteUrl = `NOTE_URL${noteId}/`;
     const body = { content };
@@ -55,6 +65,10 @@ const noteAccessor = {
     console.log('updateNoteUrl reponse:', responseJson);
     return responseJson;
   },
+  /**
+   * DELETE /api/notes/:noteId
+   * @param  {Number}  noteId the id of the note being deleted.
+   */
   async deleteNoteAsync(noteId) {
     const deleteNoteUrl = `NOTE_URL${noteId}/`;
     const response = await fetch(deleteNoteUrl, {
