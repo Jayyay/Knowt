@@ -47,7 +47,6 @@ class LeftMenu extends React.Component {
             label="Menu"
             onTouchTap={this.handleToggle}
           />
-          // <Paper style={style.paper}>
             <Drawer docked={false} onRequestChange={this.handleToggle} open={this.state.open} containerStyle={{ height: 'calc(100% - 64px)', top: 64 }}>
               <MenuItem primaryText="New note" leftIcon={<NoteAdd />} onTouchTap={this.props.newItem("text")} />
               <MenuItem primaryText="To do" leftIcon={<CheckBox />} />
@@ -57,7 +56,6 @@ class LeftMenu extends React.Component {
               <MenuItem primaryText="Settings" leftIcon={<Settings />} />
               <MenuItem primaryText="Help" leftIcon={<Help />} />
             </Drawer>
-          // </Paper>
         </div>
       </MuiThemeProvider>
     );

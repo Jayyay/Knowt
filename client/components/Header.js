@@ -26,9 +26,6 @@ class Header extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      displayName: 'User Name',
-    };
   }
 
   render() {
@@ -49,7 +46,7 @@ class Header extends React.Component {
       <IconMenu
         iconButtonElement={
           <FlatButton
-            label={this.state.displayName}
+            label={this.props.displayName}
             icon={<AccountCircle />}
             style={buttonStyle}
           />

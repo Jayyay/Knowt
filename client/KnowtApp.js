@@ -14,10 +14,13 @@ injectTapEventPlugin();
 const KnowtApp = React.createClass({
   getInitialState() {
     return {
-      items: this.props.store.load(),
-      displayName: 'blah',
+      items: [],
       form: null,
     };
+  },
+
+  componentDidMount() {
+    this.getNotes(null);
   },
   /**
    * Provided for the UndoStack mixin.
@@ -33,59 +36,90 @@ const KnowtApp = React.createClass({
     this.setState(snapshot);
   },
 
+  async getNotes(query) {
+    const notes = await noteAccessor.getNotesByQueryAsync(query);
+    if (notes.status === 'success') {
+      this.setState({ items: notes.data });
+      console.log("These are the state items in knowtapp: " + this.state.items);
+      return notes;
+    }else{
+      console.log("there is an error in retreiving the notes");
+    }
+    return null;
+  },
+
+  async noteDelete(id) {
+    await noteAccessor.deleteNoteAsync(id);
+  },
+
+  async noteEdit(id, content) {
+    await noteAccessor.updateNoteAsync(id, content);
+  },
 
   save(items) {
     this.props.store.save(items);
     // this.snapshot();
-    this.setState({items: items});
+    this.setState({ items });
   },
 
   _forms: {
-      text: function(data) {
-        return (
-          <NoteForm resetForm={this.resetForm}
-                        create={this.create}
-                        update={this.update}
-                        data={data} />
-        );
-      },
+    text(data) {
+      return (
+        <NoteForm
+          resetForm={this.resetForm}
+          create={this.create}
+          update={this.update}
+          data={data}
+        />
+      );
     },
+  },
 
-    formCreator: function(type) {
-       return function(data) {
-         console.log(this._forms[type].call(this, data));
-         this.setState({form: this._forms[type].call(this, data)});
-       }.bind(this);
-     },
+  formCreator(type) {
+    return function (data) {
+      console.log(this._forms[type].call(this, data));
+      this.setState({ form: this._forms[type].call(this, data) });
+    }.bind(this);
+  },
 
-     newItem: function(type) {
-       return this.formCreator(type).bind(null, {});
-     },
+  newItem(type) {
+    return this.formCreator(type).bind(null, {});
+  },
 
   resetForm() {
     this.setState({ form: null });
   },
 
-  create(itemData) {
+  async create(itemData) {
     itemData.id = utils.nextId(this.state.items);
     this.save(this.state.items.concat([itemData]));
+    const res = await noteAccessor.createNoteAsync(itemData.title + "*%(&" + itemData.text);
+    if (res.status === 'success') {
+      this.getNotes(null);
+    }
     this.resetForm();
   },
 
   edit(itemData) {
-    this.formCreator(itemData.type)(itemData);
+    this.formCreator("text")(itemData);
   },
 
-  update(updatedItem) {
-    this.save(this.state.items.map((item) => {
-      if (item.id === updatedItem.id) { return updatedItem; }
-      return item;
-    }));
+  async update(updatedItem) {
+    // this.save(this.state.items.map((item) => {
+    //   if (item.id === updatedItem.id) { return updatedItem; }
+    //   return item;
+    // }));
+    const res = await noteAccessor.updateNoteAsync(updatedItem.id, updatedItem.title + "*%(&" + updatedItem.text);
+    if (res.status === 'success') {
+      this.getNotes(null);
+    }
     this.resetForm();
   },
 
   remove(itemData) {
     this.save(this.state.items.filter(data => itemData !== data));
+    console.log(`Deleted: ${itemData.id}`);
+    this.noteDelete(itemData.id);
   },
 
   move(fromIndex, toIndex) {
@@ -97,7 +131,7 @@ const KnowtApp = React.createClass({
   render() {
     return (
       <div>
-        <Header displayName={this.state.displayName} />
+        <Header displayName={this.props.displayName} />
         <LeftMenu newItem={this.newItem} />
         {this.state.form}
         <KnowtItems

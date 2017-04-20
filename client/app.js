@@ -28,14 +28,16 @@ class App extends React.Component {
     });
   }
 
+  checkLoggedIn(state, name) {
+    this.setState({ displayName : name });
+    this.setState({ isLoggedIn: state });
+
   componentDidMount() {
     if (this.state.isRedirectedFromExternalLogin) {
       userAccessor.loginWithAccessToken();
     }
   }
 
-  checkLoggedIn(state) {
-    this.setState({ isLoggedIn: state });
   }
 
   render() {
@@ -59,7 +61,7 @@ class App extends React.Component {
         </div>
       );
     }
-    return <div> <KnowtApp store={store} /> </div>;
+    return <div> <KnowtApp store={store} displayName={this.state.displayName} /> </div>;
   }
 }
 

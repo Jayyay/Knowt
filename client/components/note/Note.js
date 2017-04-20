@@ -18,7 +18,7 @@ const Note = React.createClass({
       <div className="text-entry">
         <div
           className="text-entry-text"
-          dangerouslySetInnerHTML={{ __html: marked(this.props.data.text||'') }}
+          dangerouslySetInnerHTML={{ __html: marked(this.props.data||'') }}
         />
       </div>
     );
