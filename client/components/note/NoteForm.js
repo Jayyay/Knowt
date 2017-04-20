@@ -86,11 +86,6 @@ const NoteForm = React.createClass({
                 />
               </div>
             </div>
-            <div className="modal-footer form-group">
-              <button type="submit" className="btn btn-primary">Save</button>
-                  &nbsp;
-              <a href="#" onClick={this.handleCancel}>Cancel</a>
-            </div>
           </form>
         </Dialog>
       </MuiThemeProvider>

@@ -1,3 +1,4 @@
+const noteAccessor = require('../../accessor/noteAccessor');
 
 function KeptStore(options) {
   options = options || {};
