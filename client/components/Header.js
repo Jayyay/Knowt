@@ -56,7 +56,7 @@ class Header extends React.Component {
       >
         <MenuItem primaryText="Account Settings" />
         <MenuItem primaryText="Help" />
-        <MenuItem primaryText="Sign out" />
+        <MenuItem primaryText="Sign out" onTouchTap={this.props.logout}/>
       </IconMenu>
     );
     return (
