@@ -1,10 +1,11 @@
-const React = require('react');
-const KnowtApp = require('./KnowtApp');
-const { render } = require('react-dom');
+import Spinner from 'react-spinner-material';
+import React from 'react';
+import KnowtApp from './KnowtApp';
+import { render } from 'react-dom';
+
 const KeptStore = require('./store');
 const store = new KeptStore();
 const userAccessor = require('../accessor/userAccessor.js');
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 const Loginscreen = require('./containers/Loginscreen.js').default;
 
 class App extends React.Component {
@@ -13,7 +14,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       loginPage: [],
-      isLoggedIn: false,
+      isLoggedIn: userAccessor.isLoggedIn(),
+      isRedirectedFromExternalLogin: userAccessor.isRedirected(),
     };
     this.checkLoggedIn = this.checkLoggedIn.bind(this);
   }
@@ -26,12 +28,30 @@ class App extends React.Component {
     });
   }
 
+  componentDidMount() {
+    if (this.state.isRedirectedFromExternalLogin) {
+      userAccessor.loginWithAccessToken();
+    }
+  }
+
   checkLoggedIn(state) {
     this.setState({ isLoggedIn: state });
-    console.log(this.state.isLoggedIn);
   }
 
   render() {
+    if (this.state.isRedirectedFromExternalLogin) {
+      return (
+        <div>
+          <Spinner
+            width={30}
+            height={40}
+            spinnerColor={'#458'}
+            spinnerWidth={2}
+            show={true}
+          />
+        </div>
+      );
+    }
     if (!this.state.isLoggedIn) {
       return (
         <div className="Main">
