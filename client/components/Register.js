@@ -41,7 +41,7 @@ class Register extends React.Component {
       console.log('Register Failed!');
     }
   }
-  
+
   handleClick(event) {
     this.register();
   }
