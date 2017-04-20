@@ -18,6 +18,7 @@ class App extends React.Component {
       isRedirectedFromExternalLogin: userAccessor.isRedirected(),
     };
     this.checkLoggedIn = this.checkLoggedIn.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   componentWillMount() {
@@ -33,6 +34,10 @@ class App extends React.Component {
     this.setState({ isLoggedIn: state });
   }
 
+  logout() {
+    userAccessor.logout();
+    this.setState({ isLoggedIn: userAccessor.isLoggedIn() });
+  }
   componentDidMount() {
     if (this.state.isRedirectedFromExternalLogin) {
       userAccessor.loginWithAccessToken();
@@ -60,7 +65,7 @@ class App extends React.Component {
         </div>
       );
     }
-    return <div> <KnowtApp store={store} displayName={this.state.displayName} /> </div>;
+    return <div> <KnowtApp store={store} displayName={this.state.displayName} logout={this.logout} /> </div>;
   }
 }
 

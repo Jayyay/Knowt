@@ -131,7 +131,7 @@ const KnowtApp = React.createClass({
   render() {
     return (
       <div>
-        <Header displayName={this.props.displayName} />
+        <Header displayName={this.props.displayName} logout={this.props.logout}/>
         <LeftMenu newItem={this.newItem} />
         {this.state.form}
         <KnowtItems
