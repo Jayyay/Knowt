@@ -14,6 +14,7 @@ class App extends React.Component {
     this.state = {
       loginPage: [],
       isLoggedIn: false,
+      displayName: '',
     };
     this.checkLoggedIn = this.checkLoggedIn.bind(this);
   }
@@ -26,9 +27,12 @@ class App extends React.Component {
     });
   }
 
-  checkLoggedIn(state) {
+
+  checkLoggedIn(state, name) {
+      console.log("This is the name passed in " + name);
+    this.setState({ displayName : name });
     this.setState({ isLoggedIn: state });
-    console.log(this.state.isLoggedIn);
+    console.log("This is the name " + this.state.displayName);
   }
 
   render() {
@@ -39,7 +43,7 @@ class App extends React.Component {
         </div>
       );
     }
-    return <div> <KnowtApp store={store} /> </div>;
+    return <div> <KnowtApp store={store} displayName={this.state.displayName} /> </div>;
   }
 }
 

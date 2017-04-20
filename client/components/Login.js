@@ -35,7 +35,8 @@ class Login extends React.Component {
     if (res.status === 'success') {
       this.setState({ message: 'Login Successful!' });
       this.handleOpen();
-      this.props.checkLoggedIn(true);
+      this.props.checkLoggedIn(true, res.data.displayName);
+
        // change page
     } else {
       this.setState({ message: 'Login Failed.' });

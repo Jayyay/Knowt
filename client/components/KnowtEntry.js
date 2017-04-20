@@ -2,7 +2,7 @@ const React = require('react');
 const GlyphiconLink = require('./GlyphiconLink');
 const Note = require('./note/Note.js');
 const Panel = require('react-bootstrap').Panel;
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import {Card, CardActions, CardHeader, CardText, CardTitle} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Paper from 'material-ui/Paper';
@@ -67,25 +67,37 @@ const KnowtEntry = React.createClass({
     this.getDOMNode().querySelector('.panel').classList.remove('targetted');
   },
 
+  titleSplitter(str){
+    if(str==undefined){
+      return undefined;
+    }
+    return str.substring(0, str.indexOf("*%(&"));
+  },
+
+  contentSplitter(str){
+    if(str==undefined){
+      return undefined;
+    }
+    return str.substring(str.indexOf("*%(&")+4, str.length);
+  },
+
   render() {
 
     const style = {
-  height: 200,
   width: 300,
   margin: 20,
   display: 'inline-block',
 };
-
     return (
       <MuiThemeProvider>
       <Draggable>
       <Paper style={style} zDepth={2}>
       <Card>
-        <CardHeader
-          title = {this.props.itemData.title || 'Untitled'}
+        <CardTitle
+          title = {this.titleSplitter(this.props.itemData.content) || 'Untitled'}
           />
         <CardText>
-          {this.getComponent(this.props.itemData)}
+          {this.getComponent(this.contentSplitter(this.props.itemData.content))}
         </CardText>
       </Card>
       <CardActions>

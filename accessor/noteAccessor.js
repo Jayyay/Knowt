@@ -54,7 +54,7 @@ const noteAccessor = {
    * @param  {String}  content new content
    */
   async updateNoteAsync(noteId, content) {
-    const updateNoteUrl = `NOTE_URL${noteId}/`;
+    const updateNoteUrl = `${NOTE_URL}${noteId}/`;
     const body = { content };
     const response = await fetch(updateNoteUrl, {
       method: 'PUT',
@@ -70,7 +70,7 @@ const noteAccessor = {
    * @param  {Number}  noteId the id of the note being deleted.
    */
   async deleteNoteAsync(noteId) {
-    const deleteNoteUrl = `NOTE_URL${noteId}/`;
+    const deleteNoteUrl = `${NOTE_URL}${noteId}/`;
     const response = await fetch(deleteNoteUrl, {
       method: 'DELETE',
       headers: userAccessor.getAuthHeader(),

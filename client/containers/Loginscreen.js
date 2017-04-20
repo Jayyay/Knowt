@@ -33,7 +33,7 @@ class Loginscreen extends React.Component {
   }
   componentWillMount() {
     const loginscreen = [];
-    loginscreen.push(<Login parentContext={this} appContext={this.props.parentContext} checkLoggedIn={this.props.checkLoggedIn} />);
+    loginscreen.push(<Login parentContext={this} appContext={this.props.parentContext} checkLoggedIn={this.props.checkLoggedIn}/>);
     const loginmessage = 'Not Registered yet? \n Click here to register!';
     this.setState({
       loginscreen,
@@ -57,7 +57,7 @@ class Loginscreen extends React.Component {
       });
     } else {
       const loginscreen = [];
-      loginscreen.push(<Login parentContext={this} checkLoggedIn={this.props.checkLoggedIn} />);
+      loginscreen.push(<Login parentContext={this} checkLoggedIn={this.props.checkLoggedIn}/>);
       loginmessage = 'Not Registered yet? \n Click here to register!';
       this.setState({
         loginscreen,

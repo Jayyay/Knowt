@@ -34,6 +34,7 @@ const KnowtItems = React.createClass({
         utils
           .range(this.state.columns)
           .map(function (_, index) {
+            console.log("Items passed down from KnowtApp to KnowtItems: " + this.props.items);
             const colItems = this.props.items.filter(function (item, i) {
               return i % this.state.columns === index;
             }, this);

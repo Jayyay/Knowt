@@ -6,10 +6,24 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 const NoteForm = React.createClass({
   getInitialState() {
     return {
-      title: this.props.data.title,
-      text: this.props.data.text,
+      title: this.titleSplitter(this.props.data.content),
+      text: this.contentSplitter(this.props.data.content),
       open: true,
     };
+  },
+
+  titleSplitter(str){
+    if(str==undefined){
+      return undefined;
+    }
+    return str.substring(0, str.indexOf("*%(&"));
+  },
+
+  contentSplitter(str){
+    if(str==undefined){
+      return undefined;
+    }
+    return str.substring(str.indexOf("*%(&")+4, str.length);
   },
 
   handleCancel() {
@@ -27,10 +41,10 @@ const NoteForm = React.createClass({
 
   handleSubmit() {
     const rawId = this.refs.id.value;
-    const process = rawId ? this.props.update : this.props.create;
+    const process = (this.props.data.id!=null) ? this.props.update : this.props.create;
     process({
       type: 'text',
-      id: rawId ? parseInt(rawId, 10) : null,
+      id: (this.props.data.id!=null)? this.props.data.id : null,
       title: this.refs.title.value.trim(),
       text: this.refs.text.value.trim(),
     });
