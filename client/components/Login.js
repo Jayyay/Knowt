@@ -84,6 +84,8 @@ class Login extends React.Component {
             />
             <br />
             <RaisedButton label="Submit" primary style={style} onClick={event => this.handleClick(event)} />
+            or
+            <RaisedButton label="Login With NetID" primary style={style} onClick={event => userAccessor.loginWithNetId()} />
             <Dialog
              title={this.state.message}
               actions={actions}
