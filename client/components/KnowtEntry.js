@@ -2,22 +2,37 @@ const React = require('react');
 const GlyphiconLink = require('./GlyphiconLink');
 const Note = require('./note/Note.js');
 const Panel = require('react-bootstrap').Panel;
-import {Card, CardActions, CardHeader, CardText, CardTitle} from 'material-ui/Card';
+import { Card, CardActions, CardHeader, CardText, CardTitle } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+
+import IconButton from 'material-ui/IconButton';
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Paper from 'material-ui/Paper';
 const Draggable = require('react-draggable');
 import ReactDOM from 'react-dom';
+import Edit from 'material-ui/svg-icons/image/edit';
+import Delete from 'material-ui/svg-icons/action/delete';
+
+import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
+
 const KnowtEntry = React.createClass({
 
+  getInitialState() {
+    return {
+      open: false,
+    };
+  },
+
   _components: {
-    text: function(itemData) {
-          return (<Note data={itemData} />);
-        },
+    text(itemData) {
+      return (<Note data={itemData} />);
+    },
   },
 
   getComponent(data) {
-    return this._components["text"].call(this, data);
+    return this._components.text.call(this, data);
   },
 
   handleClickEdit() {
@@ -25,7 +40,7 @@ const KnowtEntry = React.createClass({
   },
 
   handleClickDelete() {
-    if (!confirm('Are you sure?')) { return; }
+    // if (!confirm('Are you sure?')) { return; }
     ReactDOM.findDOMNode(this).classList.add('fade');
     this.timeout = setTimeout(() => {
       ReactDOM.findDOMNode(this).classList.remove('fade');
@@ -67,46 +82,83 @@ const KnowtEntry = React.createClass({
     this.getDOMNode().querySelector('.panel').classList.remove('targetted');
   },
 
-  titleSplitter(str){
-    if(str==undefined){
+  titleSplitter(str) {
+    if (str == undefined) {
       return undefined;
     }
-    return str.substring(0, str.indexOf("*%(&"));
+    return str.substring(0, str.indexOf('*%(&'));
   },
 
-  contentSplitter(str){
-    if(str==undefined){
+  contentSplitter(str) {
+    if (str == undefined) {
       return undefined;
     }
-    return str.substring(str.indexOf("*%(&")+4, str.length);
+    return str.substring(str.indexOf('*%(&') + 4, str.length);
+  },
+
+  handleOpen() {
+    this.setState({ open: true });
+  },
+
+  handleClose() {
+    this.setState({ open: false });
   },
 
   render() {
-
     const style = {
-  width: 300,
-  margin: 20,
-  display: 'inline-block',
-};
+      width: 300,
+      margin: 20,
+      display: 'inline-block',
+    };
+
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onTouchTap={this.handleClose}
+      />,
+      <FlatButton
+        label="Ok"
+        primary
+        onTouchTap={this.handleClickDelete}
+      />,
+    ];
     return (
       <MuiThemeProvider>
-      <Draggable>
-      <Paper style={style} zDepth={2}>
-      <Card>
-        <CardTitle
-          title = {this.titleSplitter(this.props.itemData.content) || 'Untitled'}
-          />
-        <CardText>
-          {this.getComponent(this.contentSplitter(this.props.itemData.content))}
-        </CardText>
-      </Card>
-      <CardActions>
-         <FlatButton label="Edit" onTouchTap={this.handleClickEdit} />
-         <FlatButton label="Delete" onTouchTap={this.handleClickDelete} />
-       </CardActions>
-      </Paper>
-      </Draggable>
+        <div>
+          <Dialog
+            actions={actions}
+            modal={false}
+            open={this.state.open}
+            onRequestClose={this.handleClose}
+          >
+          Delete Note?
+        </Dialog>
+          <Draggable>
+            <Paper style={style} zDepth={2}>
+              <Card>
+                <CardTitle
+                  title={this.titleSplitter(this.props.itemData.content) || 'Untitled'}
+                />
+                <CardText>
+                  {this.getComponent(this.contentSplitter(this.props.itemData.content))}
+                </CardText>
+              </Card>
+              <CardActions>
+                <IconButton tooltip="Edit" onTouchTap={this.handleClickEdit}>
+                  <Edit />
+                </IconButton>
+                <IconButton tooltip="Delete" onTouchTap={this.handleOpen}>
+                  <Delete />
+                </IconButton>
+              </CardActions>
+            </Paper>
+          </Draggable>
+        </div>
+
       </MuiThemeProvider>
+
+
     );
   },
 });
