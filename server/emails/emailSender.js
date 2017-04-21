@@ -20,20 +20,24 @@ const smtpServer = emailjs.server.connect({
  * @param  {String} toAddr          user receipient email address
  */
 function send(userId, subject, content) {
-  models.users.findOne({
-    attributes: ['email'],
-    where: { id: userId },
-  }).then((userObject) => {
-    smtpServer.send({
-      from: selfAddr,
-      to: userObject.email,
-      subject,
-      text: content,
-    }, (error, message) => {
-      console.log('Error: ', error || 'NONE');
-      console.log('message: ', message || 'NONE');
+  try {
+    models.users.findOne({
+      attributes: ['email'],
+      where: { id: userId },
+    }).then((userObject) => {
+      smtpServer.send({
+        from: selfAddr,
+        to: userObject.email,
+        subject,
+        text: content,
+      }, (error, message) => {
+        console.log('Error: ', error || 'NONE');
+        console.log('message: ', message || 'NONE');
+      });
     });
-  });
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 const emailSender = {
