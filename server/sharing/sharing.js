@@ -46,8 +46,8 @@ router.get('/', (req, res) => {
       userIdToUsers = _.keyBy(userObjects, 'id');
       _.forEach(responseNotes, (n) => {
         n.username = userIdToUsers[n.userId].username;
-        u.displayName = userIdToUsers[n.userId].displayName;
-        u.email = userIdToUsers[n.userId].email;
+        n.displayName = userIdToUsers[n.userId].displayName;
+        n.email = userIdToUsers[n.userId].email;
         if (noteIdToSharings[n.id]) {
           n.permission = noteIdToSharings[n.id][0].permission;
         } else {
