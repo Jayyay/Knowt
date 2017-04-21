@@ -155,10 +155,10 @@ const KnowtApp = React.createClass({
     this.resetForm();
   },
 
-  async share(itemData, userName) {
+  async share(itemData, userName, permission) {
     const userId = this.userNameToId(userName);
     const id = itemData.id;
-    const res = await sharingAccessor.shareNoteWithUserAsync(id, userId, 'EDIT');
+    const res = await sharingAccessor.shareNoteWithUserAsync(id, userId, permission);
     if (res.status === 'success') {
       this.getNotes(null);
     }

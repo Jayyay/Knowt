@@ -26,6 +26,7 @@ import MenuItem from 'material-ui/MenuItem';
 import InfoIcon from 'material-ui/svg-icons/action/info';
 import UnshareIcon from 'material-ui/svg-icons/content/remove-circle-outline';
 import { darkBlack } from 'material-ui/styles/colors';
+import DropDownMenu from 'material-ui/DropDownMenu';
 
 class KnowtEntry extends React.Component {
 
@@ -38,6 +39,7 @@ class KnowtEntry extends React.Component {
       dataSource: [],
       shareUserName: '',
       allUsers: [],
+      dropDownValue: 1,
     };
     this.handleShareOpen = this.handleShareOpen.bind(this);
     this.getAllUsers = this.getAllUsers.bind(this);
@@ -56,11 +58,25 @@ class KnowtEntry extends React.Component {
     this.extractAllUsers = this.extractAllUsers.bind(this);
     this.handleUnShareOpen = this.handleUnShareOpen.bind(this);
     this.handleClickUnShare = this.handleClickUnShare.bind(this);
+    this.getPermission = this.getPermission.bind(this);
   }
 
 
   componentWillMount() {
     this.getAllUsers();
+  }
+
+  getPermission(){
+    console.log("i was entered");
+    if(this.props.itemData.sharing){
+          console.log("i was entered2");
+          console.log(this.props.itemData.sharing.permission);
+      if(this.props.itemData.sharing.permission==='VIEW'){
+        console.log('xxx' + this.props.itemData.sharing.permission);
+        return true;
+      }
+    }
+    return false;
   }
 
   async getAllUsers() {
@@ -86,29 +102,21 @@ class KnowtEntry extends React.Component {
 
   getUserSharedList() {
     const userList = [];
-    const iconButtonElement = (
-      <IconButton
-        touch
-        tooltip="more"
-        tooltipPosition="bottom-left"
-      >
-        <MoreVertIcon />
-      </IconButton>
-    );
 
-    const rightIconMenu = (
-      <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem leftIcon={<InfoIcon />}>User Info</MenuItem>
-        <MenuItem leftIcon={<UnshareIcon />}>Unshare</MenuItem>
-      </IconMenu>
-);
-    if (this.props.itemData.sharing) {
+    if (this.props.itemData.sharing || (this.props.itemData.userId !== userAccessor.getId())) {
       const noteId = this.props.itemData.id;
-      console.log('*** itemData is defined');
-      _.forEach(this.props.itemData.sharing, (user) => {
+      console.log('*** itemData is defined' + this.props.itemData);
+      let array = [];
+      if (this.props.itemData.sharing) {
+        array = this.props.itemData.sharing;
+      } else {
+        array.push(this.props.itemData);
 
+      }
+
+      _.forEach(array, (user) => {
         const userId = user.userId;
-        console.log("Foreach " + user);
+        console.log(`Foreach ${user}`);
         const unShareButtonIcon = (
           <IconButton
             touch
@@ -130,7 +138,7 @@ class KnowtEntry extends React.Component {
             label="UnShare"
             primary
             onTouchTap={() => this.handleClickUnShare(noteId, userId)}
-            //*** this is the line causing trouble
+            //* ** this is the line causing trouble
           />,
         ];
 
@@ -159,11 +167,6 @@ class KnowtEntry extends React.Component {
           </div>,
                             );
       });
-    } else if (this.props.itemData.userId !== userAccessor.getId()) {
-      const userName = this.idToUserName(this.props.itemData.userId);
-      console.log(userName);
-      // setTimeout(function(){userList.push(<ListItem primaryText={userName} />);}, 100);
-      userList.push(<ListItem primaryText={userName.toString()} leftIcon={<AccountCircle />} rightIconButton={rightIconMenu} />);
     } else {
       userList.push(<ListItem primaryText="No shared users!" />);
     }
@@ -189,13 +192,17 @@ class KnowtEntry extends React.Component {
   }
 
   handleClickShare() {
+    let permission = 'EDIT';
     this.handleClose();
-    this.props.share(this.props.itemData, this.state.shareUserName);
+    if (this.state.dropDownValue == 2) {
+      permission = 'VIEW';
+    }
+    this.props.share(this.props.itemData, this.state.shareUserName, permission);
   }
 
   handleClickUnShare(noteId, userId) {
-    console.log("Note ID to be unshare " + noteId);
-    console.log("User ID to be unshare " + userId);
+    console.log(`Note ID to be unshare ${noteId}`);
+    console.log(`User ID to be unshare ${userId}`);
     this.handleClose();
     this.props.unShare(noteId, userId);
   }
@@ -295,6 +302,11 @@ class KnowtEntry extends React.Component {
               dataSource={this.state.dataSource}
               onUpdateInput={this.handleUpdateInput}
             />
+            <br />
+            <DropDownMenu value={this.state.dropDownValue} onChange={(event, index, value) => this.setState({ dropDownValue: value })}>
+              <MenuItem value={1} primaryText="Edit" />
+              <MenuItem value={2} primaryText="View" />
+            </DropDownMenu>
           </Dialog>
           <Draggable>
             <Paper style={style} zDepth={2}>
@@ -307,7 +319,7 @@ class KnowtEntry extends React.Component {
                 </CardText>
               </Card>
               <CardActions>
-                <IconButton tooltip="Edit" onTouchTap={this.handleClickEdit}>
+                <IconButton tooltip="Edit" onTouchTap={this.handleClickEdit} disabled={this.getPermission()}>
                   <Edit />
                 </IconButton>
                 <IconButton tooltip="Delete" onTouchTap={this.handleDeleteOpen}>
