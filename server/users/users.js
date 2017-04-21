@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
 router.get('/all', (req, res) => {
   const query = {
     id: req.user.id,
-    attributes: ['id', 'displayName', 'email'],
+    attributes: ['id', 'username', 'displayName', 'email'],
   };
   queryBuilder.page(query, req.query.rowPerPage, req.query.pageNumber);
   models.users.findAll(query).then((userObjects) => {

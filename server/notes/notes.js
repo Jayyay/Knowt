@@ -12,6 +12,7 @@ const router = express.Router();
 router.get('/', (req, res) => {
   let responseNotes;
   db.sequelize.transaction((t) => {
+    let sharings;
     const query = { where: { userId: req.user.id } };
     queryBuilder.page(query, req.query.rowPerPage, req.query.pageNumber);
     queryBuilder.orderByCreatedAt(query);
@@ -25,7 +26,26 @@ router.get('/', (req, res) => {
         transaction: t,
       });
     }).then((sharingObjects) => {
-      const noteIdToSharings = _.groupBy(sharingObjects, 'noteId');
+      sharings = sharingObjects;
+      const userIds = _.chain(sharingObjects).map('userId').uniq().value();
+      return models.users.findAll({
+        attributes: [['id', 'userId'], 'username', 'displayName', 'email'],
+        where: { id: userIds },
+        transaction: t,
+      });
+    }).then((userObjects) => {
+      const userIdToUsers = _
+        .chain(userObjects)
+        .map('dataValues')
+        .keyBy('userId')
+        .value();
+      const noteIdToSharings = _
+        .chain(sharings)
+        .map(share => _.assign(
+          { noteId: share.noteId }, userIdToUsers[share.userId])
+        )
+        .groupBy('noteId')
+        .value();
       _.forEach(responseNotes, (n) => {
         n.sharing = noteIdToSharings[n.id];
       });
