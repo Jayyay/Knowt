@@ -1,9 +1,9 @@
 const utils = require('../utils');
 const React = require('react');
 const KnowtColumns = require('./KnowtColumns');
-
+const Resize = require('../mixins/Resize');
 const KnowtItems = React.createClass({
-
+   mixins:[Resize],
   getInitialState() {
     return {
       columns: 1,
@@ -22,20 +22,14 @@ const KnowtItems = React.createClass({
   },
 
   render() {
-    // if (!this.props.items.length) {
-    //   return (
-    //     //DefaultContent
-    //   );
-    // }
-
     return (
       <div className="kept-list">
         {
         utils
           .range(this.state.columns)
-          .map(function (_, index) {
-            console.log("Items passed down from KnowtApp to KnowtItems: " + this.props.items);
-            const colItems = this.props.items.filter(function (item, i) {
+          .map(function a(_, index) {
+            const colItems = this.props.items.filter(
+              function b(item, i) {
               return i % this.state.columns === index;
             }, this);
 
@@ -47,7 +41,9 @@ const KnowtItems = React.createClass({
                 edit={this.props.edit}
                 remove={this.props.remove}
                 update={this.props.update}
-                move={this.props.move}
+                share={this.props.share}
+                allUsers={this.props.allUsers}
+                unShare={this.props.unShare}
               />
             );
           }, this)

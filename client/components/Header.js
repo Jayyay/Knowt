@@ -5,6 +5,8 @@ import MenuItem from 'material-ui/MenuItem';
 import AccountCircle from 'material-ui/svg-icons/action/account-circle';
 import FlatButton from 'material-ui/FlatButton';
 import EditorIcon from 'material-ui/svg-icons/editor/mode-edit';
+import AccountIcon from 'material-ui/svg-icons/action/build';
+import SignOutIcon from 'material-ui/svg-icons/action/exit-to-app';
 const React = require('react');
 const userAccessor = require('../../accessor/userAccessor.js');
 
@@ -54,9 +56,8 @@ class Header extends React.Component {
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
         targetOrigin={{ horizontal: 'left', vertical: 'top' }}
       >
-        <MenuItem primaryText="Account Settings" />
-        <MenuItem primaryText="Help" />
-        <MenuItem primaryText="Sign out" onTouchTap={this.props.logout}/>
+        <MenuItem primaryText="Account Settings" leftIcon={<AccountIcon />}/>
+        <MenuItem primaryText="Sign out" leftIcon={<SignOutIcon />} onTouchTap={this.props.logout}/>
       </IconMenu>
     );
     return (
@@ -65,6 +66,7 @@ class Header extends React.Component {
           <AppBar
             title={customIcon}
             iconElementRight={accountButton}
+            onLeftIconButtonTouchTap={this.props.openMenu}
           />
         </div>
       </MuiThemeProvider>
