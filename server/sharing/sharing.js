@@ -38,7 +38,7 @@ router.get('/', (req, res) => {
       responseNotes = _.map(noteObjects, 'dataValues');
       const userIds = _.chain(noteObjects).map('userId').uniq();
       return models.users.findAll({
-        attributes: ['id', 'username', 'displayName'],
+        attributes: ['id', 'username', 'displayName', 'email'],
         where: { id: userIds },
         transaction: t,
       });
@@ -46,6 +46,8 @@ router.get('/', (req, res) => {
       userIdToUsers = _.keyBy(userObjects, 'id');
       _.forEach(responseNotes, (n) => {
         n.username = userIdToUsers[n.userId].username;
+        u.displayName = userIdToUsers[n.userId].displayName;
+        u.email = userIdToUsers[n.userId].email;
         if (noteIdToSharings[n.id]) {
           n.permission = noteIdToSharings[n.id][0].permission;
         } else {
