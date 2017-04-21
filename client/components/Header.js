@@ -65,6 +65,7 @@ class Header extends React.Component {
           <AppBar
             title={customIcon}
             iconElementRight={accountButton}
+            onLeftIconButtonTouchTap={this.props.openMenu}
           />
         </div>
       </MuiThemeProvider>

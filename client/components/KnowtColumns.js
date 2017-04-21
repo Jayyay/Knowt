@@ -15,7 +15,9 @@ const KnowtColumns = React.createClass({
             remove={this.props.remove}
             update={this.props.update}
             share={this.props.share}
-            move={this.props.move}
+            move={this.props.allUsers}
+            unShare={this.props.unShare}
+            
           />);
         })
       }</div>

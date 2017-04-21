@@ -17,11 +17,35 @@ const KnowtApp = React.createClass({
     return {
       items: [],
       form: null,
+      allUsers: [],
+      mode: 'All',
+      menuState: false,
     };
   },
 
+  componentWillMount() {
+    this.getAllUsers();
+    console.log('I should be called first');
+  },
+
   componentDidMount() {
-    this.getNotes(null);
+    console.log(`from app.js ${this.state.allUsers}`);
+    if (this.state.mode == 'All') {
+      this.getNotes(null);
+    } else if (this.state.mode == 'Private') {
+      this.getMyNotes(null);
+    } else if (this.state.mode == 'Shared') {
+      this.getSharedNotes(null);
+    }
+    console.log('I should be called second');
+  },
+
+  async getAllUsers() {
+    const res = await userAccessor.getAllUsersByQueryAsync(null);
+    if (res.status === 'success') {
+      this.setState({ allUsers: res.data });
+    }
+    console.log(`from app.js getallusers${this.state.allUsers}`);
   },
   /**
    * Provided for the UndoStack mixin.
@@ -39,28 +63,53 @@ const KnowtApp = React.createClass({
 
   async getNotes(query) {
     const notes = await noteAccessor.getNotesByQueryAsync(query);
+    const notesSharedWithMe = await sharingAccessor.getNotesSharedWithMeByQueryAsync(query);
     if (notes.status === 'success') {
-      this.setState({ items: notes.data });
-      console.log("These are the state items in knowtapp: " + this.state.items);
+      const allNotes = notes.data.concat(notesSharedWithMe.data);
+      this.setState({ items: allNotes });
+      this.setState({ mode: 'All' });
+      console.log(`These are the state items in knowtapp: ${this.state.items}`);
       return notes;
-    }else{
-      console.log("there is an error in retreiving the notes");
     }
+    console.log('there is an error in retreiving the notes');
+
     return null;
   },
 
-  async noteDelete(id) {
-    await noteAccessor.deleteNoteAsync(id);
+  async getMyNotes(query) {
+    const notes = await noteAccessor.getNotesByQueryAsync(query);
+    if (notes.status === 'success') {
+      this.setState({ items: notes.data });
+      this.setState({ mode: 'Private' });
+      return notes;
+    }
+    console.log('there is an error in retreiving the notes');
+
+    return null;
+  },
+
+  async getSharedNotes(query) {
+    const notes = await sharingAccessor.getNotesSharedWithMeByQueryAsync(query);
+    if (notes.status === 'success') {
+      this.setState({ items: notes.data });
+      this.setState({ mode: 'Shared' });
+      console.log(`These are the state items in knowtapp: ${this.state.items}`);
+      return notes;
+    }
+    console.log('there is an error in retreiving the notes');
+
+    return null;
   },
 
   async noteEdit(id, content) {
     await noteAccessor.updateNoteAsync(id, content);
   },
 
-  userNameToId(userName){
-    //insert conversion function
-    return 5;
+  userNameToId(userName) {
+    const usernameToUser = _.keyBy(this.state.allUsers, 'username');
+    return usernameToUser[userName].id;
   },
+
 
   save(items) {
     this.props.store.save(items);
@@ -99,7 +148,7 @@ const KnowtApp = React.createClass({
   async create(itemData) {
     itemData.id = utils.nextId(this.state.items);
     this.save(this.state.items.concat([itemData]));
-    const res = await noteAccessor.createNoteAsync(itemData.title + "*%(&" + itemData.text);
+    const res = await noteAccessor.createNoteAsync(`${itemData.title}*%(&${itemData.text}`);
     if (res.status === 'success') {
       this.getNotes(null);
     }
@@ -110,31 +159,41 @@ const KnowtApp = React.createClass({
     const userId = this.userNameToId(userName);
     const id = itemData.id;
     const res = await sharingAccessor.shareNoteWithUserAsync(id, userId, 'EDIT');
-    if(res.status==='success'){
+    if (res.status === 'success') {
+      this.getNotes(null);
+    }
+  },
+
+  async unShare(noteId, userId) {
+    const res = await sharingAccessor.stopSharingNoteWithUserAsync(noteId, userId);
+    if (res.status === 'success') {
       this.getNotes(null);
     }
   },
 
   edit(itemData) {
-    this.formCreator("text")(itemData);
+    this.formCreator('text')(itemData);
   },
 
   async update(updatedItem) {
-    // this.save(this.state.items.map((item) => {
-    //   if (item.id === updatedItem.id) { return updatedItem; }
-    //   return item;
-    // }));
-    const res = await noteAccessor.updateNoteAsync(updatedItem.id, updatedItem.title + "*%(&" + updatedItem.text);
+    this.save(this.state.items.map((item) => {
+      if (item.id === updatedItem.id) { return updatedItem; }
+      return item;
+    }));
+    const res = await noteAccessor.updateNoteAsync(updatedItem.id, `${updatedItem.title}*%(&${updatedItem.text}`);
     if (res.status === 'success') {
       this.getNotes(null);
     }
     this.resetForm();
   },
 
-  remove(itemData) {
+  async remove(itemData) {
     this.save(this.state.items.filter(data => itemData !== data));
-    console.log(`Deleted: ${itemData.id}`);
-    this.noteDelete(itemData.id);
+    // console.log(`Deleted: ${itemData.id}`);
+    const res = noteAccessor.deleteNoteAsync(itemData.id);
+    if (res.status === 'success') {
+      this.getNotes(null);
+    }
   },
 
   move(fromIndex, toIndex) {
@@ -143,19 +202,24 @@ const KnowtApp = React.createClass({
     this.save(items);
   },
 
+  openMenu(){
+    this.setState({menuState:!this.state.menuState});
+  },
+
   render() {
     return (
       <div>
-        <Header displayName={this.props.displayName} logout={this.props.logout}/>
-        <LeftMenu newItem={this.newItem} />
+        <Header displayName={this.props.displayName} logout={this.props.logout} openMenu={this.openMenu}/>
+        <LeftMenu newItem={this.newItem} getNotes={this.getNotes} getMyNotes={this.getMyNotes} getSharedNotes={this.getSharedNotes} openMenu = {this.openMenu} menuState={this.state.menuState}/>
         {this.state.form}
         <KnowtItems
           items={this.state.items}
           edit={this.edit}
           update={this.update}
           remove={this.remove}
-          move={this.move}
+          allUsers={this.allUsers}
           share={this.share}
+          unShare={this.unShare}
         />
       </div>
     );

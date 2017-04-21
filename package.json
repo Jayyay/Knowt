@@ -33,6 +33,7 @@
     "lodash": "^4.17.4",
     "marked": "^0.3.6",
     "material-ui": "^0.17.4",
+    "mixin": "^0.2.0",
     "mysql": "^2.13.0",
     "node-fetch": "^1.6.3",
     "passport": "^0.3.2",
