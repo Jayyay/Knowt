@@ -1,6 +1,7 @@
 const React = require('react');
 const userAccessor = require('../accessor/userAccessor');
 const noteAccessor = require('../accessor/noteAccessor');
+const sharingAccessor = require('../accessor/sharingAccessor');
 const Header = require('./components/Header').default;
 const LeftMenu = require('./components/LeftMenu').default;
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -56,6 +57,11 @@ const KnowtApp = React.createClass({
     await noteAccessor.updateNoteAsync(id, content);
   },
 
+  userNameToId(userName){
+    //insert conversion function
+    return 5;
+  },
+
   save(items) {
     this.props.store.save(items);
     // this.snapshot();
@@ -100,6 +106,15 @@ const KnowtApp = React.createClass({
     this.resetForm();
   },
 
+  async share(itemData, userName) {
+    const userId = this.userNameToId(userName);
+    const id = itemData.id;
+    const res = await sharingAccessor.shareNoteWithUserAsync(id, userId, 'EDIT');
+    if(res.status==='success'){
+      this.getNotes(null);
+    }
+  },
+
   edit(itemData) {
     this.formCreator("text")(itemData);
   },
@@ -140,6 +155,7 @@ const KnowtApp = React.createClass({
           update={this.update}
           remove={this.remove}
           move={this.move}
+          share={this.share}
         />
       </div>
     );

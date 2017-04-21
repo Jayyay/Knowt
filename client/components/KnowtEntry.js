@@ -4,40 +4,84 @@ const Note = require('./note/Note.js');
 const Panel = require('react-bootstrap').Panel;
 import { Card, CardActions, CardHeader, CardText, CardTitle } from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-
+const userAccessor = require('../../accessor/userAccessor.js');
 import IconButton from 'material-ui/IconButton';
-
+import AutoComplete from 'material-ui/AutoComplete';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Paper from 'material-ui/Paper';
 const Draggable = require('react-draggable');
 import ReactDOM from 'react-dom';
 import Edit from 'material-ui/svg-icons/image/edit';
 import Delete from 'material-ui/svg-icons/action/delete';
-
+import Share from 'material-ui/svg-icons/social/person-add';
+import SharedUsers from 'material-ui/svg-icons/social/group';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
+import {List, ListItem} from 'material-ui/List';
+import _ from 'lodash';
 
-const KnowtEntry = React.createClass({
+class KnowtEntry extends React.Component {
 
-  getInitialState() {
-    return {
-      open: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      deleteOpen: false,
+      shareOpen: false,
+      dataSource: [],
+      shareUserName: '',
     };
-  },
+    this.handleShareOpen = this.handleShareOpen.bind(this);
+    this.getAllUsers = this.getAllUsers.bind(this);
+    this.getUserSharedList = this.getUserSharedList.bind(this);
+    this.extractAllUsers = this.extractAllUsers.bind(this);
+    this.getComponent = this.getComponent.bind(this);
+    this.handleClickEdit = this.handleClickEdit.bind(this);
+    this.handleClickDelete = this.handleClickDelete.bind(this);
+    this.handleClickShare = this.handleClickShare.bind(this);
+    this.titleSplitter = this.titleSplitter.bind(this);
+    this.contentSplitter = this.contentSplitter.bind(this);
+    this.handleDeleteOpen = this.handleDeleteOpen.bind(this);
+    this.handleShareOpen = this.handleShareOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleUpdateInput = this.handleUpdateInput.bind(this);
+  }
 
-  _components: {
-    text(itemData) {
-      return (<Note data={itemData} />);
-    },
-  },
+  componentWillMount() {
+    this.getAllUsers();
+  }
 
-  getComponent(data) {
-    return this._components.text.call(this, data);
-  },
+  async getAllUsers() {
+    const res = await userAccessor.getAllUsersByQueryAsync(null);
+    this.setState({ dataSource: this.extractAllUsers(res.data) });
+  }
+
+  getUserSharedList() {
+    userList = [];
+    if (itemData.sharing) {
+      _.forEach(this.extractAllUsers(itemData.sharing), (user) => {
+        userList.push(<ListItem primaryText={user.toString()} />);
+      });
+    } else {
+      userList.push(<ListItem primaryText="No shared users!" />);
+    }
+    return userList;
+  }
+
+  extractAllUsers(data) {
+    const userList = [];
+    _.forEach(data, (user) => {
+      userList.push(user.username);
+    });
+    return userList;
+  }
+
+  getComponent(itemData) {
+    return <Note data={itemData} />;
+  }
 
   handleClickEdit() {
     this.props.edit(this.props.itemData);
-  },
+  }
 
   handleClickDelete() {
     // if (!confirm('Are you sure?')) { return; }
@@ -46,63 +90,42 @@ const KnowtEntry = React.createClass({
       ReactDOM.findDOMNode(this).classList.remove('fade');
       this.props.remove(this.props.itemData);
     }, 250); // .fade has a 250ms animation
-  },
+  }
 
-  handleDragStart(event) {
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setData('text/plain', this.props.key);
-  },
-
-  handleDragEnter(event) {
-    event.preventDefault();
-  },
-
-  handleDragLeave(event) {
-    this.unhighlight();
-    event.preventDefault();
-  },
-
-  handleOnDragOver(event) {
-    event.preventDefault();
-    this.highlight();
-  },
-
-  handleOnDrop(event) {
-    event.preventDefault();
-    this.unhighlight();
-    const newIndex = parseInt(event.dataTransfer.getData('text/plain'), 10);
-    this.props.move(newIndex, this.props.key);
-  },
-
-  highlight() {
-    this.getDOMNode().querySelector('.panel').classList.add('targetted');
-  },
-
-  unhighlight() {
-    this.getDOMNode().querySelector('.panel').classList.remove('targetted');
-  },
+  handleClickShare() {
+    this.props.share(this.props.itemData, this.state.shareUserName);
+  }
 
   titleSplitter(str) {
     if (str == undefined) {
       return undefined;
     }
     return str.substring(0, str.indexOf('*%(&'));
-  },
+  }
 
   contentSplitter(str) {
     if (str == undefined) {
       return undefined;
     }
     return str.substring(str.indexOf('*%(&') + 4, str.length);
-  },
+  }
 
-  handleOpen() {
-    this.setState({ open: true });
-  },
+  handleDeleteOpen() {
+    this.setState({ deleteOpen: true });
+  }
+
+  handleShareOpen() {
+    this.setState({ shareOpen: true });
+  }
 
   handleClose() {
-    this.setState({ open: false });
-  },
+    this.setState({ deleteOpen: false });
+    this.setState({ shareOpen: false });
+  }
+
+  handleUpdateInput(value) {
+    this.setState({ shareUserName: value });
+  }
 
   render() {
     const style = {
@@ -111,7 +134,7 @@ const KnowtEntry = React.createClass({
       display: 'inline-block',
     };
 
-    const actions = [
+    const deleteActions = [
       <FlatButton
         label="Cancel"
         primary
@@ -123,17 +146,44 @@ const KnowtEntry = React.createClass({
         onTouchTap={this.handleClickDelete}
       />,
     ];
+
+    const shareActions = [
+      <FlatButton
+        label="Cancel"
+        primary
+        onTouchTap={this.handleClose}
+      />,
+      <FlatButton
+        label="Ok"
+        primary
+        onTouchTap={this.handleClickShare}
+      />,
+    ];
+
     return (
       <MuiThemeProvider>
         <div>
           <Dialog
-            actions={actions}
+            actions={deleteActions}
             modal={false}
-            open={this.state.open}
+            open={this.state.deleteOpen}
             onRequestClose={this.handleClose}
           >
           Delete Note?
         </Dialog>
+          <Dialog
+            actions={deleteActions}
+            modal={false}
+            open={this.state.shareOpen}
+            onRequestClose={this.handleClose}
+          >
+            <AutoComplete
+              hintText="Type a username"
+              filter={AutoComplete.fuzzyFilter}
+              dataSource={this.state.dataSource}
+              onUpdateInput={this.handleUpdateInput}
+            />
+          </Dialog>
           <Draggable>
             <Paper style={style} zDepth={2}>
               <Card>
@@ -148,19 +198,24 @@ const KnowtEntry = React.createClass({
                 <IconButton tooltip="Edit" onTouchTap={this.handleClickEdit}>
                   <Edit />
                 </IconButton>
-                <IconButton tooltip="Delete" onTouchTap={this.handleOpen}>
+                <IconButton tooltip="Delete" onTouchTap={this.handleDeleteOpen}>
                   <Delete />
                 </IconButton>
+                <IconButton tooltip="Share" onTouchTap={this.handleShareOpen}>
+                  <Share />
+                </IconButton>
               </CardActions>
+              <CardText>
+                <List>
+                  <ListItem primaryText="Shared Users" leftIcon={<SharedUsers />} primaryTogglesNestedList nestedItems={this.getUserSharedList} />
+                </List>
+              </CardText>
             </Paper>
           </Draggable>
         </div>
-
       </MuiThemeProvider>
-
-
     );
-  },
-});
+  }
+}
 
-module.exports = KnowtEntry;
+export default KnowtEntry;

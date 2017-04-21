@@ -1,5 +1,5 @@
 const React = require('react');
-const KnowtEntry = require('./KnowtEntry');
+const KnowtEntry = require('./KnowtEntry').default;
 
 const KnowtColumns = React.createClass({
   render() {
@@ -14,6 +14,7 @@ const KnowtColumns = React.createClass({
             edit={this.props.edit}
             remove={this.props.remove}
             update={this.props.update}
+            share={this.props.share}
             move={this.props.move}
           />);
         })

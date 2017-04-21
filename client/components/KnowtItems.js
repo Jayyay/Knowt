@@ -47,6 +47,7 @@ const KnowtItems = React.createClass({
                 edit={this.props.edit}
                 remove={this.props.remove}
                 update={this.props.update}
+                share={this.props.share}
                 move={this.props.move}
               />
             );

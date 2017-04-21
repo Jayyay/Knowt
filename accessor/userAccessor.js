@@ -1,6 +1,6 @@
 const queryString = require('query-string');
 const configAccessor = require('./configAccessor');
-const _ = require('lodash')l
+const _ = require('lodash');
 
 const URL = configAccessor.getUrl();
 const API_URL = configAccessor.getApiUrl();
