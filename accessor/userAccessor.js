@@ -1,5 +1,6 @@
 const queryString = require('query-string');
 const configAccessor = require('./configAccessor');
+const _ = require('lodash')l
 
 const URL = configAccessor.getUrl();
 const API_URL = configAccessor.getApiUrl();
@@ -24,7 +25,7 @@ function _getLoginQueryString() {
     redirect_uri: URL,
     client_id: CLIENT_ID,
     scope: 'basic identity:netid:read',
-    state: 11291,
+    state: 17283,
   });
   return `?${qs}`;
 }
@@ -127,10 +128,26 @@ const userAccessor = {
     console.log('signUpAsync response:', responseJson);
     return responseJson;
   },
+  async getAllUsersByQueryAsync(query) {
+    let getUsersUrl = `${API_URL}users/all`;
+    if (query) {
+      const queryParams = {};
+      queryParams.rowPerPage = query.rowPerPage;
+      queryParams.pageNumber = query.pageNumber;
+      getUsersUrl += `? + ${queryString.stringify(queryParams)}`;
+    }
+    const response = await fetch(getUsersUrl, {
+      method: 'GET',
+      headers: this.getAuthHeader(),
+    });
+    const responseJson = await response.json();
+    console.log('getAllUsersByQuery response:', responseJson);
+    return responseJson;
+  },
   /**
    * GET /api/user/
    */
-  async getUser() {
+  async getUserAsync() {
     const getUsersUrl = `${API_URL}users/`;
     const response = await fetch(getUsersUrl, {
       method: 'GET',

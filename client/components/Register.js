@@ -24,7 +24,6 @@ class Register extends React.Component {
 
   async register() {
     const self = this;
-    console.log(this.state.username, this.state.password, this.state.displayName, this.state.email);
     const res = await userAccessor.signUpAsync(this.state.username, this.state.password, this.state.displayName, this.state.email);
     if (res.status === 'success') {
       const loginscreen = [];

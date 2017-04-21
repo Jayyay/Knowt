@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const models = require('../../models');
 const db = require('../../models/index');
 const rb = require('../utils/responseBuilder');
+const queryBuilder = require('../utils/queryBuilder');
 
 const router = express.Router();
 
@@ -11,8 +12,19 @@ router.get('/', (req, res) => {
     id: req.user.id,
     attributes: { exclude: ['password'] },
   };
-  models.users.findOne(query).then((user) => {
-    res.json(rb.success(user));
+  models.users.findOne(query).then((userObject) => {
+    res.json(rb.success(userObject));
+  });
+});
+
+router.get('/all', (req, res) => {
+  const query = {
+    id: req.user.id,
+    attributes: ['id', 'displayName', 'email'],
+  };
+  queryBuilder.page(query, req.query.rowPerPage, req.query.pageNumber);
+  models.users.findAll(query).then((userObjects) => {
+    res.json(rb.success(userObjects));
   });
 });
 
