@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
       where: { userId: req.user.id },
       transaction: t,
     }).then((sharingObjects) => {
-      const noteIds = _.chain(sharingObjects).map('noteId').uniq();
+      const noteIds = _.chain(sharingObjects).map('noteId').uniq().value();
       noteIdToSharings = _.groupBy(sharingObjects, 'noteId');
       const query = { where: { id: noteIds }, transaction: t };
       queryBuilder.page(query, req.query.rowPerPage, req.query.pageNumber);
@@ -36,7 +36,7 @@ router.get('/', (req, res) => {
       return models.notes.findAll(query);
     }).then((noteObjects) => {
       responseNotes = _.map(noteObjects, 'dataValues');
-      const userIds = _.chain(noteObjects).map('userId').uniq();
+      const userIds = _.chain(noteObjects).map('userId').uniq().value();
       return models.users.findAll({
         attributes: ['id', 'username', 'displayName', 'email'],
         where: { id: userIds },
