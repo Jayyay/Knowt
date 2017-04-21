@@ -107,6 +107,8 @@ class KnowtEntry extends React.Component {
       console.log('*** itemData is defined');
       _.forEach(this.props.itemData.sharing, (user) => {
 
+        const userId = user.userId;
+        console.log("Foreach " + user);
         const unShareButtonIcon = (
           <IconButton
             touch
@@ -127,7 +129,7 @@ class KnowtEntry extends React.Component {
           <FlatButton
             label="UnShare"
             primary
-            onTouchTap={() => this.handleClickUnShare(noteId, user.id)}
+            onTouchTap={() => this.handleClickUnShare(noteId, userId)}
             //*** this is the line causing trouble
           />,
         ];
@@ -191,7 +193,9 @@ class KnowtEntry extends React.Component {
     this.props.share(this.props.itemData, this.state.shareUserName);
   }
 
-  handleClickUnShare(noteId, userId, value) {
+  handleClickUnShare(noteId, userId) {
+    console.log("Note ID to be unshare " + noteId);
+    console.log("User ID to be unshare " + userId);
     this.handleClose();
     this.props.unShare(noteId, userId);
   }
