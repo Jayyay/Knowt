@@ -23,11 +23,12 @@ router.get('/', (req, res) => {
   let responseNotes;
   db.sequelize.transaction((t) => {
     let noteIdToSharings;
+    let userIdToUsers;
     return models.sharing.findAll({
       where: { userId: req.user.id },
       transaction: t,
     }).then((sharingObjects) => {
-      const noteIds = _.map(sharingObjects, 'noteId');
+      const noteIds = _.chain(sharingObjects).map('noteId').uniq();
       noteIdToSharings = _.groupBy(sharingObjects, 'noteId');
       const query = { where: { id: noteIds }, transaction: t };
       queryBuilder.page(query, req.query.rowPerPage, req.query.pageNumber);
@@ -35,7 +36,16 @@ router.get('/', (req, res) => {
       return models.notes.findAll(query);
     }).then((noteObjects) => {
       responseNotes = _.map(noteObjects, 'dataValues');
+      const userIds = _.chain(noteObjects).map('userId').uniq();
+      return models.users.findAll({
+        attributes: ['id', 'username', 'displayName'],
+        where: { id: userIds },
+        transaction: t,
+      });
+    }).then((userObjects) => {
+      userIdToUsers = _.keyBy(userObjects, 'id');
       _.forEach(responseNotes, (n) => {
+        n.username = userIdToUsers[n.userId].username;
         if (noteIdToSharings[n.id]) {
           n.permission = noteIdToSharings[n.id][0].permission;
         } else {

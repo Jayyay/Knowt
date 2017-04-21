@@ -59,7 +59,7 @@ const sharingAccessor = {
    * @param  {String}  permission  EDIT or VIEW
    */
   async updatePermissionForSharedNoteAsync(noteId, userId, permission) {
-    const updatePermissionUrl = `SHARE_URL${noteId}/${userId}/`;
+    const updatePermissionUrl = `${SHARE_URL}${noteId}/${userId}/`;
     const body = { permission };
     const response = await fetch(updatePermissionUrl, {
       method: 'PUT',
@@ -77,7 +77,7 @@ const sharingAccessor = {
    * @param  {Number}  userId
    */
   async stopSharingNoteWithUserAsync(noteId, userId) {
-    const deleteSharingUrl = `SHARE_URL${noteId}/${userId}/`;
+    const deleteSharingUrl = `${SHARE_URL}${noteId}/${userId}/`;
     const response = await fetch(deleteSharingUrl, {
       method: 'DELETE',
       headers: userAccessor.getAuthHeader(),

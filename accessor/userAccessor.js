@@ -128,6 +128,13 @@ const userAccessor = {
     console.log('signUpAsync response:', responseJson);
     return responseJson;
   },
+  /**
+   * GET /api/users/all
+   * Get all users with their basic information.
+   * Pagination supported.
+   * @param  {Object}  query {rowPerPage, pageNumber}
+   *                         Note that pageNumber starts from 1.
+   */
   async getAllUsersByQueryAsync(query) {
     let getUsersUrl = `${API_URL}users/all`;
     if (query) {
@@ -146,6 +153,7 @@ const userAccessor = {
   },
   /**
    * GET /api/user/
+   * Get all current user's information, excluding password.
    */
   async getUserAsync() {
     const getUsersUrl = `${API_URL}users/`;
@@ -159,7 +167,6 @@ const userAccessor = {
   },
   /**
    * PUT /api/user/
-   * with body
    * @param  {Object}  update {displayName, email, password} (fields are all optional)
    */
   async updateUserAsync(update) {
