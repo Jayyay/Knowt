@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
       const noteIds = _.map(noteObjects, 'id');
       responseNotes = _.map(noteObjects, 'dataValues');
       return models.sharing.findAll({
-        attributes: ['noteId', 'userId'],
+        attributes: ['noteId', 'userId', 'permission'],
         where: { noteId: noteIds },
         transaction: t,
       });
@@ -42,7 +42,7 @@ router.get('/', (req, res) => {
       const noteIdToSharings = _
         .chain(sharings)
         .map(share => _.assign(
-          { noteId: share.noteId }, userIdToUsers[share.userId])
+          { noteId: share.noteId, permission: share.permission }, userIdToUsers[share.userId])
         )
         .groupBy('noteId')
         .value();
