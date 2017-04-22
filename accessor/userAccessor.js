@@ -1,5 +1,6 @@
 const queryString = require('query-string');
 const configAccessor = require('./configAccessor');
+const _ = require('lodash');
 
 const URL = configAccessor.getUrl();
 const API_URL = configAccessor.getApiUrl();
@@ -24,13 +25,13 @@ function _getLoginQueryString() {
     redirect_uri: URL,
     client_id: CLIENT_ID,
     scope: 'basic identity:netid:read',
-    state: 11291,
+    state: 17283,
   });
   return `?${qs}`;
 }
 
 async function _loginAsync(credentials) {
-  const loginUrl = URL + 'login/';
+  const loginUrl = `${URL}login/`;
   const body = {
     username: credentials.username || undefined,
     password: credentials.password || undefined,
@@ -54,15 +55,17 @@ async function _loginAsync(credentials) {
 const userAccessor = {
   getAuthHeader() {
     return {
-      'Authorization': 'JWT ' + this.getToken(),
+      Authorization: `JWT ${this.getToken()}`,
       'Content-Type': 'application/json',
     };
+  },
+  getUserInfo() {
+    return JSON.parse(sessionStorage.getItem(USER_KEY));
   },
   isLoggedIn() {
     const token = this.getToken();
     const id = this.getId();
-    const permission = this.getPermission();
-    return token && !isNaN(id) && permission;
+    return token && !isNaN(id);
   },
   isRedirected() {
     return !!_getAccessTokenFromURL();
@@ -114,7 +117,7 @@ const userAccessor = {
    * @param  {String}  email
    */
   async signUpAsync(username, password, displayName, email) {
-    const signUpUrl = `${API_URL}users/`;
+    const signUpUrl = `${URL}signup/`;
     const body = { username, password, displayName, email };
     const response = await fetch(signUpUrl, {
       method: 'POST',
@@ -126,9 +129,33 @@ const userAccessor = {
     return responseJson;
   },
   /**
-   * GET /api/user/
+   * GET /api/users/all
+   * Get all users with their basic information.
+   * Pagination supported.
+   * @param  {Object}  query {rowPerPage, pageNumber}
+   *                         Note that pageNumber starts from 1.
    */
-  async getUser() {
+  async getAllUsersByQueryAsync(query) {
+    let getUsersUrl = `${API_URL}users/all`;
+    if (query) {
+      const queryParams = {};
+      queryParams.rowPerPage = query.rowPerPage;
+      queryParams.pageNumber = query.pageNumber;
+      getUsersUrl += `? + ${queryString.stringify(queryParams)}`;
+    }
+    const response = await fetch(getUsersUrl, {
+      method: 'GET',
+      headers: this.getAuthHeader(),
+    });
+    const responseJson = await response.json();
+    console.log('getAllUsersByQuery response:', responseJson);
+    return responseJson;
+  },
+  /**
+   * GET /api/user/
+   * Get all current user's information, excluding password.
+   */
+  async getUserAsync() {
     const getUsersUrl = `${API_URL}users/`;
     const response = await fetch(getUsersUrl, {
       method: 'GET',
@@ -140,7 +167,6 @@ const userAccessor = {
   },
   /**
    * PUT /api/user/
-   * with body
    * @param  {Object}  update {displayName, email, password} (fields are all optional)
    */
   async updateUserAsync(update) {

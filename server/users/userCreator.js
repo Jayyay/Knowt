@@ -28,7 +28,6 @@ function createNewUser(userObject, config) {
       password = bcrypt.hashSync(userObject.password, 8);
     }
     let newlyCreatedUser;
-    console.log(userObject.isNetIdUser);
     db.sequelize.transaction((t) => {
       return models.users.create({
         username: userObject.username,
@@ -47,7 +46,7 @@ function createNewUser(userObject, config) {
     }).then(() => { // committed
       res.json(rb.success(newlyCreatedUser));
     }).catch((error) => {
-      res.status(400).json(rb.failure(error, rb.ERROR.TRANSACTION_ERR));
+      res.status(400).json(rb.failure(error.message, rb.ERROR.TRANSACTION_ERR));
     });
   }
 }
