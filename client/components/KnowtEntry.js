@@ -27,6 +27,7 @@ import InfoIcon from 'material-ui/svg-icons/action/info';
 import UnshareIcon from 'material-ui/svg-icons/content/remove-circle-outline';
 import { darkBlack } from 'material-ui/styles/colors';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import ViewOnly from 'material-ui/svg-icons/action/visibility';
 
 class KnowtEntry extends React.Component {
 
@@ -58,25 +59,12 @@ class KnowtEntry extends React.Component {
     this.extractAllUsers = this.extractAllUsers.bind(this);
     this.handleUnShareOpen = this.handleUnShareOpen.bind(this);
     this.handleClickUnShare = this.handleClickUnShare.bind(this);
-    this.getPermission = this.getPermission.bind(this);
+    this.getPermissionComponent = this.getPermissionComponent.bind(this);
   }
 
 
   componentWillMount() {
     this.getAllUsers();
-  }
-
-  getPermission(){
-    console.log("i was entered");
-    if(this.props.itemData.sharing){
-          console.log("i was entered2");
-          console.log(this.props.itemData.sharing.permission);
-      if(this.props.itemData.sharing.permission==='VIEW'){
-        console.log('xxx' + this.props.itemData.sharing.permission);
-        return true;
-      }
-    }
-    return false;
   }
 
   async getAllUsers() {
@@ -105,13 +93,12 @@ class KnowtEntry extends React.Component {
 
     if (this.props.itemData.sharing || (this.props.itemData.userId !== userAccessor.getId())) {
       const noteId = this.props.itemData.id;
-      console.log('*** itemData is defined' + this.props.itemData);
+      console.log(`*** itemData is defined${this.props.itemData}`);
       let array = [];
       if (this.props.itemData.sharing) {
         array = this.props.itemData.sharing;
       } else {
         array.push(this.props.itemData);
-
       }
 
       _.forEach(array, (user) => {
@@ -153,7 +140,7 @@ class KnowtEntry extends React.Component {
                 </div>
           }
               secondaryTextLines={2}
-              leftIcon={<AccountCircle />} rightIconButton={unShareButtonIcon}
+              leftIcon={this.getPermissionComponent(user.permission)} rightIconButton={unShareButtonIcon}
             />
             <Dialog
               title="Unshare Note"
@@ -175,6 +162,13 @@ class KnowtEntry extends React.Component {
 
   getComponent(itemData) {
     return <Note data={itemData} />;
+  }
+
+  getPermissionComponent(permission){
+    if(permission==='VIEW' && this.props.itemData.userId === userAccessor.getId()){
+      return <ViewOnly/>
+    }
+    return <AccountCircle/>
   }
 
   handleClickEdit() {
@@ -319,7 +313,7 @@ class KnowtEntry extends React.Component {
                 </CardText>
               </Card>
               <CardActions>
-                <IconButton tooltip="Edit" onTouchTap={this.handleClickEdit} disabled={this.getPermission()}>
+                <IconButton tooltip="Edit" onTouchTap={this.handleClickEdit} disabled={(this.props.itemData.permission === 'VIEW')}>
                   <Edit />
                 </IconButton>
                 <IconButton tooltip="Delete" onTouchTap={this.handleDeleteOpen}>
