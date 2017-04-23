@@ -5,12 +5,26 @@ import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import PropTypes from 'react-prop-types';
-
+import EditorIcon from 'material-ui/svg-icons/editor/mode-edit';
+import IconButton from 'material-ui/IconButton';
+import { Card, CardText, CardHeader, CardTitle } from 'material-ui/Card';
+import { Link } from 'react-router-dom';
 const React = require('react');
 const userAccessor = require('../../accessor/userAccessor.js');
 
+const cardStyle = {
+  marginTop: 50,
+  marginBottom: 50,
+  height: 400,
+};
+
 const style = {
   margin: 15,
+};
+
+const iconStyles = {
+  color: 'white',
+  marginTop: 11,
 };
 
 class Login extends React.Component {
@@ -33,10 +47,7 @@ class Login extends React.Component {
   async login() {
     const res = await userAccessor.loginAsync(this.state.username, this.state.password);
     if (res.status === 'success') {
-      this.setState({ message: 'Login Successful!' });
-      this.handleOpen();
-      this.props.checkLoggedIn(true, res.data.displayName);
-
+      this.props.checkLoggedIn(true);
        // change page
     } else {
       this.setState({ message: 'Login Failed.' });
@@ -58,6 +69,20 @@ class Login extends React.Component {
   }
 
   render() {
+    const customIcon = (
+      <div>
+        <FlatButton
+          label="K N O W T"
+          labelPosition="after"
+          labelStyle={{ fontSize: '30px', fontWeight: 'bold' }}
+          primary
+          icon={<EditorIcon />}
+          style={iconStyles}
+          containerElement={<Link to="/" />}
+        />
+
+      </div>
+    );
     const actions = [
       <FlatButton
         label="Ok"
@@ -67,36 +92,43 @@ class Login extends React.Component {
     ];
 
     return (
-      <div>
-        <MuiThemeProvider>
-          <div>
-            <TextField
-              hintText="Enter your Username"
-              floatingLabelText="Username"
-              onChange={(event, newValue) => this.setState({ username: newValue })}
-            />
-            <br />
-            <TextField
-              type="password"
-              hintText="Enter your Password"
-              floatingLabelText="Password"
-              onChange={(event, newValue) => this.setState({ password: newValue })}
-            />
-            <br />
-            <RaisedButton label="Submit" primary style={style} onClick={event => this.handleClick(event)} />
+      <MuiThemeProvider>
+        <div>
+          <AppBar title={customIcon} titleStyle={{ textAlign: 'center' }} showMenuIconButton={false} />
+          <Card className="container" style={cardStyle}>
+            <CardTitle title="Login" />
+            <div>
+              <TextField
+                hintText="Enter your Username"
+                floatingLabelText="Username"
+                onChange={(event, newValue) => this.setState({ username: newValue })}
+              />
+              <br />
+              <TextField
+                type="password"
+                hintText="Enter your Password"
+                floatingLabelText="Password"
+                onChange={(event, newValue) => this.setState({ password: newValue })}
+              />
+              <br />
+              <br />
+              <RaisedButton label="Login" primary style={style} onClick={event => this.handleClick(event)} />
             or
             <RaisedButton label="Login With NetID" primary style={style} onClick={event => userAccessor.loginWithNetId()} />
-            <Dialog
-             title={this.state.message}
-              actions={actions}
-              modal={false}
-              open={this.state.open}
-              onRequestClose={this.handleClose}
-            >
-            </Dialog>
-          </div>
-        </MuiThemeProvider>
-      </div>
+              <br />
+              <p><b>Don't have an account?</b></p>
+              <RaisedButton label="Register" primary style={style} containerElement={<Link to="/register" />} />
+              <Dialog
+                title={this.state.message}
+                actions={actions}
+                modal
+                open={this.state.open}
+                onRequestClose={this.handleClose}
+              />
+            </div>
+          </Card>
+        </div>
+      </MuiThemeProvider>
     );
   }
 }
