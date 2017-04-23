@@ -20,6 +20,7 @@ const KnowtApp = React.createClass({
       allUsers: [],
       mode: 'All',
       menuState: false,
+      displayName: userAccessor.getDisplayName(),
     };
   },
 
@@ -209,7 +210,7 @@ const KnowtApp = React.createClass({
   render() {
     return (
       <div>
-        <Header displayName={this.props.displayName} logout={this.props.logout} openMenu={this.openMenu}/>
+        <Header displayName={this.state.displayName} logout={this.props.logout} openMenu={this.openMenu}/>
         <LeftMenu newItem={this.newItem} getNotes={this.getNotes} getMyNotes={this.getMyNotes} getSharedNotes={this.getSharedNotes} openMenu = {this.openMenu} menuState={this.state.menuState}/>
         {this.state.form}
         <KnowtItems

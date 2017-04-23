@@ -14,7 +14,7 @@ const style = {
 };
 
 const buttonStyle = {
-  margin: 12,
+  margin: 15,
   marginTop: 50,
   marginBottom: 50,
   height: 50,
@@ -48,8 +48,8 @@ class LandingPage extends React.Component {
           <AppBar title={customIcon} titleStyle={{ textAlign: 'center' }} showMenuIconButton={false} />
           <Card className="container"style={style}>
             <CardMedia
-             overlay={            <div><RaisedButton label="Register" primary style={buttonStyle} containerElement={<Link to="/login" />}/>
-                                  <RaisedButton label="Login" primary style={buttonStyle} /></div>}
+             overlay={            <div><RaisedButton label="Register" primary style={buttonStyle} containerElement={<Link to="/register" />}/>
+                                  <RaisedButton label="Login" primary style={buttonStyle} containerElement={<Link to="/login" />}/></div>}
                                   style={style}
             >
             <img src="/resources/img/background.png" />
