@@ -45,9 +45,9 @@ async function _loginAsync(credentials) {
   const responseJson = await response.json();
   console.log(responseJson);
   if (responseJson.status === 'success') {
-    sessionStorage.setItem(USER_KEY, JSON.stringify(responseJson.data));
+    localStorage.setItem(USER_KEY, JSON.stringify(responseJson.data));
   } else {
-    sessionStorage.removeItem(USER_KEY);
+    localStorage.removeItem(USER_KEY);
   }
   return responseJson;
 }
@@ -60,7 +60,7 @@ const userAccessor = {
     };
   },
   getUserInfo() {
-    return JSON.parse(sessionStorage.getItem(USER_KEY));
+    return JSON.parse(localStorage.getItem(USER_KEY));
   },
   isLoggedIn() {
     const token = this.getToken();
@@ -71,7 +71,7 @@ const userAccessor = {
     return !!_getAccessTokenFromURL();
   },
   getCachedUserInfo() {
-    return JSON.parse(sessionStorage.getItem(USER_KEY));
+    return JSON.parse(localStorage.getItem(USER_KEY));
   },
   getId() {
     const user = this.getUserInfo();
@@ -104,7 +104,7 @@ const userAccessor = {
     window.location.replace(OAUTH_URL + _getLoginQueryString());
   },
   logout() {
-    sessionStorage.removeItem(USER_KEY);
+    localStorage.removeItem(USER_KEY);
   },
   /**
    * POST /signup

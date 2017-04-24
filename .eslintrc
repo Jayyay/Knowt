@@ -13,5 +13,6 @@
     "window": 1,
     "fetch": 1,
     "sessionStorage": 1,
+    "localStorage": 1,
   }
 }
