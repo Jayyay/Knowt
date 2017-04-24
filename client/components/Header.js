@@ -56,7 +56,6 @@ class Header extends React.Component {
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
         targetOrigin={{ horizontal: 'left', vertical: 'top' }}
       >
-        <MenuItem primaryText="Account Settings" leftIcon={<AccountIcon />}/>
         <MenuItem primaryText="Sign out" leftIcon={<SignOutIcon />} onTouchTap={this.props.logout}/>
       </IconMenu>
     );
