@@ -16,7 +16,7 @@ const userAccessor = require('../../accessor/userAccessor.js');
 const cardStyle = {
   marginTop: 50,
   marginBottom: 50,
-  height: 500,
+  height: 550,
 };
 
 const style = {
@@ -98,7 +98,7 @@ class Register extends React.Component {
   }
 
   validatePassword(input){
-    const reg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    const reg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
     return reg.test(input);
   }
 
@@ -160,7 +160,7 @@ class Register extends React.Component {
                 onChange={(event, newValue) => {
                   this.setState({ password: newValue });
                   if (!this.validatePassword(newValue)) {
-                    this.setState({ passwordCheck: 'Minimum 8 characters at least 1 Alphabet and 1 Number:' });
+                    this.setState({ passwordCheck: 'Minimum 8 characters at least 1 Alphabet, 1 Number and 1 Special Character.' });
                   }else{
                     this.setState({passwordCheck: ''});
                   }

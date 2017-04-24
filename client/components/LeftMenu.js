@@ -67,12 +67,7 @@ class LeftMenu extends React.Component {
               <Divider />
               <MenuItem primaryText="All Notes" leftIcon={<CheckBox />} onTouchTap={this.getAllNotes} />
               <MenuItem primaryText="My Notes" leftIcon={<PrivateIcon />} onTouchTap={this.getMyNotes} />
-              <MenuItem primaryText="Shared Notes" leftIcon={<SharedIcon />}onTouchTap={this.getSharedNotes } />
-              <Divider />
-              <MenuItem primaryText="Tags" leftIcon={<Tags />} />
-              <Divider />
-              <MenuItem primaryText="Settings" leftIcon={<Settings />} />
-              <MenuItem primaryText="Help" leftIcon={<Help />} />
+              <MenuItem primaryText="Shared With Me" leftIcon={<SharedIcon />}onTouchTap={this.getSharedNotes } />
             </Drawer>
         </div>
       </MuiThemeProvider>
